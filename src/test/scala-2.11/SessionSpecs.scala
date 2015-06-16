@@ -1,4 +1,4 @@
-import com.thangiee.lolchat.changedPresence.ChangedPresence
+import com.thangiee.lolchat.changedPresence._
 import com.thangiee.lolchat.region.NA
 import com.thangiee.lolchat.{FriendEntity, FriendListListener, LoLChat, ReceiveMsgListener}
 import org.scalatest.concurrent.AsyncAssertions.{Dismissals, Waiter}
@@ -86,9 +86,58 @@ class SessionSpecs extends BaseSpec {
         f.groupNames should contain("General")
         bobSession.groupNames shouldNot contain("testGroup")
         bobSession.groupNames should contain("General")
-      case None =>
+      case None    =>
         fail("fail to find alice")
     }
   }
 
+  it should "be able to listen for various friend activities" in {
+    val w = new Waiter
+
+    bobSession.setFriendListListener(new FriendListListener {
+      def onFriendPresenceChanged(friend: FriendEntity)(changedPresence: ChangedPresence): Unit = {
+        changedPresence match {
+          case Available => w.dismiss()
+          case AFK       => w.dismiss()
+          case Login     => w.dismiss()
+          case Logout    => w.dismiss()
+          case StatusMsg => w { friend.statusMsg shouldEqual "testtest" }; w.dismiss()
+          case Playing   => // unable to test this
+        }
+      }
+      def onReceivedFriendRequest(fromId: String): Boolean = ???
+      def onFriendRemoved(id: String): Unit = ???
+      def onFriendAdded(id: String): Unit = ???
+    })
+
+    aliceSession.appearAway()    // afk
+    aliceSession.appearOnline()  // available
+    aliceSession.appearOffline() // logout
+    aliceSession.appearOnline()  // login
+    aliceSession.statusMsg = "testtest" // change status message
+
+    w.await(Timeout(10.seconds), Dismissals(5))
+  }
+
+  it should "be able to set user profile info" in {
+    bobSession.initProfileInfo(
+      iconId = 1,
+      level = 25,
+      wins = 999,
+      tier = "GOLD",
+      division = "III"
+    )
+
+    Thread.sleep(2000)
+
+    aliceSession.findFriendById(bob.summId) match {
+      case Some(f) =>
+        f.name shouldEqual bob.inGameName
+        f.level shouldEqual 25
+        f.wins shouldEqual 999
+        f.rankedTier shouldEqual Some("GOLD")
+        f.rankedDivision shouldEqual Some("III")
+      case None => fail("unable to find bob")
+    }
+  }
 }

@@ -24,7 +24,7 @@ object LoLChat {
 
   /** Search for a logged in session with the given username
     *
-    * @param user the username to search
+    * @param user the username used to login
     * @return a Session or an error message if not found
     */
   def findSession(user: String): Session Or ErrMsg = _sessions.get(user).toOr(s"No session under username $user")

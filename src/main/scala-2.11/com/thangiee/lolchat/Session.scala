@@ -4,7 +4,7 @@ import java.util
 
 import com.thangiee.lolchat.changedPresence._
 import com.thangiee.lolchat.chatMode._
-import com.thangiee.lolchat.error.{NotConnected, GroupNotFound}
+import com.thangiee.lolchat.error.NotConnected
 import com.thangiee.lolchat.region.Region
 import org.jivesoftware.smack.chat.ChatManager
 import org.jivesoftware.smack.filter.StanzaFilter
