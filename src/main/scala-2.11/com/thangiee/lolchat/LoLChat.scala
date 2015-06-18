@@ -15,7 +15,6 @@ import scala.util.Try
 
 /** Use to create and manage sessions connected to Riot pvp chat server. */
 object LoLChat {
-  type ErrMsg = String
   type Username = String
   private var _sessions = Map[Username, Session]()
 
@@ -27,7 +26,7 @@ object LoLChat {
     * @param user the username used to login
     * @return a Session or an error message if not found
     */
-  def findSession(user: String): Session Or ErrMsg = _sessions.get(user).toOr(s"No session under username $user")
+  def findSession(user: String): Session Or NotFound = _sessions.get(user).toOr(NotFound(s"No session under username $user"))
 
   /** Login a user to the chat server.
     *

@@ -1,8 +1,11 @@
 package com.thangiee.lolchat
 
 import com.thangiee.lolchat.chatMode._
+import com.thangiee.lolchat.error.NotFound
 import org.jivesoftware.smack.packet.Presence
 import org.jivesoftware.smack.roster.RosterEntry
+import org.scalactic.Or
+import org.scalactic.OptionSugar._
 
 import scala.collection.JavaConversions._
 import scala.util.Try
@@ -38,10 +41,10 @@ class FriendEntity(private[lolchat] val entry: RosterEntry, private[lolchat] val
 
   /** return the name of the champion this friend is currently using
     * @note only available when this friend is in a match */
-  def selectedChamp: Option[String] = parseStatus("skinname")
+  def selectedChamp: String Or NotFound = parseStatus("skinname").toOr(NotFound())
 
   /** return this friend's game status */
-  def gameStatus: Option[String] = parseStatus("gameStatus")
+  def gameStatus: String Or NotFound = parseStatus("gameStatus").toOr(NotFound())
 
   /** return this friend's summoner level */
   def level: Int = parseStatus("level").map(_.toInt).getOrElse(0)
@@ -54,11 +57,11 @@ class FriendEntity(private[lolchat] val entry: RosterEntry, private[lolchat] val
 
   /** return this friend's ranked league tier
     * i.e. Bronze, Silver, Gold, etc... */
-  def rankedTier: Option[String] = parseStatus("rankedLeagueTier")
+  def rankedTier: String Or NotFound = parseStatus("rankedLeagueTier").toOr(NotFound())
 
   /** return this friend's ranked division tier
     * i.e. I, II, III, IV, V */
-  def rankedDivision: Option[String] = parseStatus("rankedLeagueDivision")
+  def rankedDivision: String Or NotFound = parseStatus("rankedLeagueDivision").toOr(NotFound())
 
   /** Parse information from friend status.
     * Some values are only available use certain circumstances.

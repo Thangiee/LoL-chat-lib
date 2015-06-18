@@ -1,6 +1,7 @@
 import com.thangiee.lolchat.changedPresence._
 import com.thangiee.lolchat.region.NA
 import com.thangiee.lolchat.{FriendEntity, FriendListListener, LoLChat, ReceiveMsgListener}
+import org.scalactic.{Bad, Good}
 import org.scalatest.concurrent.AsyncAssertions.{Dismissals, Waiter}
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.time.SpanSugar._
@@ -78,7 +79,7 @@ class SessionSpecs extends BaseSpec {
     bobSession.groupNames should contain("testGroup")
 
     bobSession.findFriendByName(alice.inGameName) match {
-      case Some(f) =>
+      case Good(f) =>
         bobSession.moveFriendToGroup(f, "testGroup")
         f.groupNames should contain("testGroup")
         bobSession.moveFriendToGroup(f, "General")
@@ -86,7 +87,7 @@ class SessionSpecs extends BaseSpec {
         f.groupNames should contain("General")
         bobSession.groupNames shouldNot contain("testGroup")
         bobSession.groupNames should contain("General")
-      case None    =>
+      case Bad(notFound)    =>
         fail("fail to find alice")
     }
   }
@@ -131,13 +132,13 @@ class SessionSpecs extends BaseSpec {
     Thread.sleep(2000)
 
     aliceSession.findFriendById(bob.summId) match {
-      case Some(f) =>
+      case Good(f) =>
         f.name shouldEqual bob.inGameName
         f.level shouldEqual 25
         f.wins shouldEqual 999
-        f.rankedTier shouldEqual Some("GOLD")
-        f.rankedDivision shouldEqual Some("III")
-      case None => fail("unable to find bob")
+        f.rankedTier shouldEqual Good("GOLD")
+        f.rankedDivision shouldEqual Good("III")
+      case Bad(notFond) => fail("unable to find bob")
     }
   }
 }

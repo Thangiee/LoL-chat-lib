@@ -4,7 +4,7 @@ import java.util
 
 import com.thangiee.lolchat.changedPresence._
 import com.thangiee.lolchat.chatMode._
-import com.thangiee.lolchat.error.NotConnected
+import com.thangiee.lolchat.error.{NotFound, NotConnected}
 import com.thangiee.lolchat.region.Region
 import org.jivesoftware.smack.chat.ChatManager
 import org.jivesoftware.smack.filter.StanzaFilter
@@ -166,7 +166,7 @@ class Session(val user: String, val pass: String, val region: Region, private[lo
   def appearAway(): Unit = { presenceType = available; presenceMode = away; update(); }
 
   /** Return Id that is mapped to this summoner */
-  def summId: String Or ErrMsg = parseIdFromAddr(conn.getUser).toOr("Unable to find ID")
+  def summId: String Or NotFound = parseIdFromAddr(conn.getUser).toOr(NotFound("Unable to find ID"))
 
   /** Send a message to another summoner
     *
@@ -255,9 +255,11 @@ class Session(val user: String, val pass: String, val region: Region, private[lo
     * @param inGameName the friend's name to look for
     * @return the found friend
     */
-  def findFriendByName(inGameName: String): Option[FriendEntity] = {
+  def findFriendByName(inGameName: String): FriendEntity Or NotFound = {
     val r = Roster.getInstanceFor(conn)
-    r.getEntries.find(_.getName == inGameName).map(entry => new FriendEntity(entry, r.getPresence(entry.getUser)))
+    r.getEntries.find(_.getName == inGameName)
+      .map(entry => new FriendEntity(entry, r.getPresence(entry.getUser)))
+      .toOr(NotFound(s"Unable to find friend $inGameName"))
   }
 
   /** Find a friend by their summoner Id.
@@ -265,9 +267,11 @@ class Session(val user: String, val pass: String, val region: Region, private[lo
     * @param id the friend's id to look for
     * @return the found friend
     */
-  def findFriendById(id: String): Option[FriendEntity] = {
+  def findFriendById(id: String): FriendEntity Or NotFound = {
     val r = Roster.getInstanceFor(conn)
-    r.getEntries.find(_.getUser == s"sum$id@pvp.net").map(entry => new FriendEntity(entry, r.getPresence(entry.getUser)))
+    r.getEntries.find(_.getUser == s"sum$id@pvp.net")
+      .map(entry => new FriendEntity(entry, r.getPresence(entry.getUser)))
+      .toOr(NotFound(s"Unable to find friend id $id"))
   }
 
   private def update(): Unit = {
