@@ -63,6 +63,12 @@ class FriendEntity(private[lolchat] val entry: RosterEntry, private[lolchat] val
     * i.e. I, II, III, IV, V */
   def rankedDivision: String Or NotFound = parseStatus("rankedLeagueDivision").toOr(NotFound())
 
+  /** return this friend's league name */
+  def leagueName: String Or NotFound = parseStatus("rankedLeagueName").toOr(NotFound())
+
+  /** return the game start time in millisecond if this friend is in a game */
+  def gameStartTime: Long Or NotFound = parseStatus("timeStamp").map(_.toLong).toOr(NotFound())
+
   /** Parse information from friend status.
     * Some values are only available use certain circumstances.
     * For example, skinname is only available when the friend is in a game.
