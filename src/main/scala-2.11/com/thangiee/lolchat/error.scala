@@ -2,9 +2,10 @@ package com.thangiee.lolchat
 
 object error {
   trait Error
+  case class NotFound(msg: String = "") extends Error
 
-  sealed trait LoginError
-  case class FailAuthentication(user: String, pass: String) extends Error with LoginError
-  case class NotConnected(hostURL: String) extends Error with LoginError
-  case class UnexpectedError(throwable: Throwable) extends Error with LoginError
+  sealed trait LoginError extends Error
+  case class FailAuthentication(user: String, pass: String) extends LoginError
+  case class NotConnected(hostURL: String) extends LoginError
+  case class UnexpectedError(throwable: Throwable) extends LoginError
 }
