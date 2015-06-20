@@ -26,7 +26,7 @@ object LoLChat {
     * @param user the username used to login
     * @return a Session or an error message if not found
     */
-  def findSession(user: String): Session Or NotFound = _sessions.get(user).toOr(NotFound(s"No session under username $user"))
+  def findSession(user: String): Session Or NoSession = _sessions.get(user).toOr(NoSession(s"No session under username $user"))
 
   /** Login a user to the chat server.
     *

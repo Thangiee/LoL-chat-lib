@@ -41,10 +41,10 @@ class FriendEntity(private[lolchat] val entry: RosterEntry, private[lolchat] val
 
   /** return the name of the champion this friend is currently using
     * @note only available when this friend is in a match */
-  def selectedChamp: String Or NotFound = parseStatus("skinname").toOr(NotFound())
+  def selectedChamp: String Or NotFound = parseStatus("skinname").toOr(NotFound("Unavailable when not in a game"))
 
   /** return this friend's game status */
-  def gameStatus: String Or NotFound = parseStatus("gameStatus").toOr(NotFound())
+  def gameStatus: String Or NotFound = parseStatus("gameStatus").toOr(NotFound("Failed to parse the game status"))
 
   /** return this friend's summoner level */
   def level: Int = parseStatus("level").map(_.toInt).getOrElse(0)
@@ -57,17 +57,17 @@ class FriendEntity(private[lolchat] val entry: RosterEntry, private[lolchat] val
 
   /** return this friend's ranked league tier
     * i.e. Bronze, Silver, Gold, etc... */
-  def rankedTier: String Or NotFound = parseStatus("rankedLeagueTier").toOr(NotFound())
+  def rankedTier: String Or NotFound = parseStatus("rankedLeagueTier").toOr(NotFound("Summoner is unranked"))
 
   /** return this friend's ranked division tier
     * i.e. I, II, III, IV, V */
-  def rankedDivision: String Or NotFound = parseStatus("rankedLeagueDivision").toOr(NotFound())
+  def rankedDivision: String Or NotFound = parseStatus("rankedLeagueDivision").toOr(NotFound("Summoner is unranked"))
 
   /** return this friend's league name */
-  def leagueName: String Or NotFound = parseStatus("rankedLeagueName").toOr(NotFound())
+  def leagueName: String Or NotFound = parseStatus("rankedLeagueName").toOr(NotFound("Summoner is unranked."))
 
   /** return the game start time in millisecond if this friend is in a game */
-  def gameStartTime: Long Or NotFound = parseStatus("timeStamp").map(_.toLong).toOr(NotFound())
+  def gameStartTime: Long Or NotFound = parseStatus("timeStamp").map(_.toLong).toOr(NotFound("Unavailable when not in a game"))
 
   /** Parse information from friend status.
     * Some values are only available use certain circumstances.
