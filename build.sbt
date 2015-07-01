@@ -1,8 +1,8 @@
 name := "League-of-Legend-Chat-Lib-Scala"
 
-version := "0.1"
+version := "0.2"
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
 resolvers += "smack repo" at "https://oss.sonatype.org/content/repositories/snapshots"
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
