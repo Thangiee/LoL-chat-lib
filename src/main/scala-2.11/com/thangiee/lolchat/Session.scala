@@ -4,8 +4,9 @@ import java.util
 
 import com.thangiee.lolchat.changedPresence._
 import com.thangiee.lolchat.chatMode._
-import com.thangiee.lolchat.error.{NotFound, NotConnected}
+import com.thangiee.lolchat.error.{NotConnected, NotFound}
 import com.thangiee.lolchat.region.Region
+import org.jivesoftware.smack.ReconnectionManager.ReconnectionPolicy
 import org.jivesoftware.smack.chat.ChatManager
 import org.jivesoftware.smack.filter.StanzaFilter
 import org.jivesoftware.smack.packet.Presence.Mode._
@@ -50,9 +51,8 @@ class Session(val user: String, val pass: String, val region: Region, private[lo
   private var _tier          = "CHALLENGER"
   private var _division      = "I"
 
-  ReconnectionManager.getInstanceFor(conn).enableAutomaticReconnection()
-  ReconnectionManager.getInstanceFor(conn).setFixedDelay(7)
   Roster.getInstanceFor(conn).setSubscriptionMode(SubscriptionMode.manual)
+  enableFixedIntervalReconnection(10)
 
   // set up listener for handling received friend requests and accepting/rejecting them
   conn.addAsyncStanzaListener(
@@ -114,6 +114,31 @@ class Session(val user: String, val pass: String, val region: Region, private[lo
       }
     }
   })
+
+  /** Automatically determine the wait time before a reconnection attempt.
+    *
+    * Time between reconnection attempt depends on the number of fail attempts.
+    * It will start will a short delay and increases when reconnection attempts fails.
+    *
+    * @see http://www.igniterealtime.org/builds/smack/docs/latest/javadoc/org/jivesoftware/smack/ReconnectionManager.html
+    */
+  def enableAutoReconnection(): Unit = {
+    ReconnectionManager.getInstanceFor(conn).enableAutomaticReconnection()
+    ReconnectionManager.getInstanceFor(conn).setReconnectionPolicy(ReconnectionPolicy.RANDOM_INCREASING_DELAY)
+  }
+
+  /** Attempt to reconnect after a time interval
+    *
+    * @param interval the delay time in second before a attempt to reconnect
+    */
+  def enableFixedIntervalReconnection(interval: Int): Unit = {
+    ReconnectionManager.getInstanceFor(conn).enableAutomaticReconnection()
+    ReconnectionManager.getInstanceFor(conn).setReconnectionPolicy(ReconnectionPolicy.FIXED_DELAY)
+    ReconnectionManager.getInstanceFor(conn).setFixedDelay(interval)
+  }
+
+  /** Stop reconnection attempt */
+  def disableReconnection(): Unit = ReconnectionManager.getInstanceFor(conn).disableAutomaticReconnection()
 
   /** Initialize information that other summoner on your friend list will see.
     *

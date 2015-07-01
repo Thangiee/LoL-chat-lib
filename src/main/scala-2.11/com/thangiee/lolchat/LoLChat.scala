@@ -74,6 +74,7 @@ object LoLChat {
   /** Logout a given session
     * @param session the session to logout */
   def logout(session: Session): Unit = {
+    session.disableReconnection()
     session.conn.disconnect()
     _sessions -= session.user
   }
@@ -84,7 +85,7 @@ object LoLChat {
 
   /** Logout all sessions */
   def endAllSessions(): Unit = {
-    _sessions.foreach { case (_, session) => session.conn.disconnect() }
+    _sessions.foreach { case (_, session) => logout(session) }
     _sessions = _sessions.empty
   }
 }
