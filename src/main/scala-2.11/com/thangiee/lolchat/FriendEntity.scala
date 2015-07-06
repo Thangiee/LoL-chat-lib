@@ -15,8 +15,8 @@ import scala.util.Try
   * from an instance of [[Session]].
   */
 class FriendEntity(private[lolchat] val entry: RosterEntry, private[lolchat] val presence: Presence) {
-  val name = entry.getName
-  val id   = parseIdFromAddr(entry.getUser).getOrElse("-1")
+  lazy val name = entry.getName
+  lazy val id   = parseIdFromAddr(entry.getUser).getOrElse("-1")
 
   /** return the friend's chat mode */
   def chatMode: ChatMode = presence.getMode match {
@@ -50,7 +50,7 @@ class FriendEntity(private[lolchat] val entry: RosterEntry, private[lolchat] val
   def level: Int = parseStatus("level").map(_.toInt).getOrElse(0)
 
   /** return this friend's number of wins */
-  def wins: Int = parseStatus("wins").map(_.toInt).getOrElse(0)
+  def wins: Int = parseStatus("wins").map(_.filterNot(" ,".toSet).toInt).getOrElse(0)  // filter some tokens to avoid NumberFormatException (1000+ wins)
 
   /** return this friend's status message */
   def statusMsg: String = parseStatus("statusMsg").getOrElse("")
