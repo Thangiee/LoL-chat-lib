@@ -81,8 +81,10 @@ class SessionSpecs extends BaseSpec {
     bobSession.findFriendByName(alice.inGameName) match {
       case Good(f) =>
         bobSession.moveFriendToGroup(f, "testGroup")
+        Thread.sleep(1000) // wait for server to update
         f.groupNames should contain("testGroup")
         bobSession.moveFriendToGroup(f, "General")
+        Thread.sleep(1000) // wait for server to update
         f.groupNames shouldNot contain("testGroup")
         f.groupNames should contain("General")
         bobSession.groupNames shouldNot contain("testGroup")
