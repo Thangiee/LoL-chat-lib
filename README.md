@@ -10,30 +10,27 @@ Setup
 2. Import dependencies with SBT
   
   **Projects that target a JVM supporting Java7:**
-    ```
-    resolvers += "smack repo" at "https://oss.sonatype.org/content/repositories/snapshots"
+  
+    ```scala
+    
+    resolvers += "jcenter" at "https://jcenter.bintray.com/"
     
     libraryDependencies ++= Seq(
       "org.igniterealtime.smack" % "smack-java7" % "4.1.3",
-      "org.igniterealtime.smack" % "smack-tcp" % "4.1.3",
-      "org.igniterealtime.smack" % "smack-core" % "4.1.3",
-      "org.igniterealtime.smack" % "smack-extensions" % "4.1.3",
-      "org.scalactic" % "scalactic_2.11" % "2.2.5"
-    )
+      "com.github.thangiee" %% "league-of-legend-chat-lib-scala" % "0.2"
+    ) 
     ```
     
   **Projects that target android:**
     
-    ```
-    resolvers += "smack repo" at "https://oss.sonatype.org/content/repositories/snapshots"
+    ```scala
+    
+    resolvers += "jcenter" at "https://jcenter.bintray.com/"
     
     libraryDependencies ++= Seq(
-      "org.igniterealtime.smack" % "smack-tcp" % "4.1.3",
-      "org.igniterealtime.smack" % "smack-core" % "4.1.3",
-      "org.igniterealtime.smack" % "smack-extensions" % "4.1.3",
       "org.igniterealtime.smack" % "smack-android" % "4.1.3",
-      "org.scalactic" % "scalactic_2.11" % "2.2.5"
-    ).map(_.exclude("xpp3", "xpp3"))
+      "com.github.thangiee" %% "league-of-legend-chat-lib-scala" % "0.2"
+    )
     ```
   
   For other build tools look here: https://github.com/igniterealtime/Smack/wiki/Smack-4.1-Readme-and-Upgrade-Guide
