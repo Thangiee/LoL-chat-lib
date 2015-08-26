@@ -1,6 +1,6 @@
 name := "League-of-Legend-Chat-Lib-Scala"
 
-version := "0.2"
+version := "0.2.1"
 
 scalaVersion := "2.11.7"
 
@@ -11,7 +11,7 @@ publishMavenStyle := true
 resolvers += Resolver.jcenterRepo
 
 libraryDependencies ++= Seq(
-  "org.igniterealtime.smack" % "smack-java7" % "4.1.3",
+  "org.igniterealtime.smack" % "smack-java7" % "4.1.3" % "provided",
   "org.igniterealtime.smack" % "smack-tcp" % "4.1.3",
   "org.igniterealtime.smack" % "smack-core" % "4.1.3",
   "org.igniterealtime.smack" % "smack-extensions" % "4.1.3",

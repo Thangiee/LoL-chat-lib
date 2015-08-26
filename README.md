@@ -17,7 +17,7 @@ Setup
     
     libraryDependencies ++= Seq(
       "org.igniterealtime.smack" % "smack-java7" % "4.1.3",
-      "com.github.thangiee" %% "league-of-legend-chat-lib-scala" % "0.2"
+      "com.github.thangiee" %% "league-of-legend-chat-lib-scala" % "0.2.1"
     ) 
     ```
     
@@ -29,7 +29,7 @@ Setup
     
     libraryDependencies ++= Seq(
       "org.igniterealtime.smack" % "smack-android" % "4.1.3",
-      "com.github.thangiee" %% "league-of-legend-chat-lib-scala" % "0.2"
+      "com.github.thangiee" %% "league-of-legend-chat-lib-scala" % "0.2.1"
     )
     ```
   
