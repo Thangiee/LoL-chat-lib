@@ -5,9 +5,7 @@ A scala wrapper([Smack](http://www.igniterealtime.org/projects/smack/)) library 
 
 Setup
 -----
-1. Download the [**jar**](https://github.com/Thangiee/League-of-Legend-Chat-Lib-Scala/tree/master/bin) and add it to your project. 
-
-2. Import dependencies with SBT
+* Import with SBT
   
   **Projects that target a JVM supporting Java7:**
   
