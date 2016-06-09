@@ -10,10 +10,15 @@ libraryDependencies ++= Seq(
   "org.igniterealtime.smack" % "smack-java7" % smackVer % "provided",
   "org.igniterealtime.smack" % "smack-tcp" % smackVer,
   "org.igniterealtime.smack" % "smack-core" % smackVer,
-  "org.igniterealtime.smack" % "smack-extensions" % smackVer,
+  "org.igniterealtime.smack" % "smack-extensions" % smackVer
 )
 
 libraryDependencies ++= Seq(
+  "org.typelevel" %% "cats-macros" % "0.6.0",
+  "org.typelevel" %% "cats-kernel" % "0.6.0",
+  "org.typelevel" %% "cats-core" % "0.6.0",
+  "org.typelevel" %% "cats-free" % "0.6.0",
+  "com.lihaoyi" %% "scalarx" % "0.3.1",
   "org.scalactic" % "scalactic_2.11" % "2.2.5"
 )
 
