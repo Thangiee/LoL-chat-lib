@@ -1,13 +1,14 @@
 name := "League-of-Legend-Chat-Lib-Scala"
 version := "0.2.1"
 scalaVersion := "2.11.8"
+scalacOptions ++= Seq("-Xexperimental")
 organization := "com.github.thangiee"
 publishMavenStyle := true
 resolvers += Resolver.jcenterRepo
 
 val smackVer = "4.1.7"
 libraryDependencies ++= Seq(
-  "org.igniterealtime.smack" % "smack-java7" % smackVer % "provided",
+  "org.igniterealtime.smack" % "smack-java7" % smackVer,
   "org.igniterealtime.smack" % "smack-tcp" % smackVer,
   "org.igniterealtime.smack" % "smack-core" % smackVer,
   "org.igniterealtime.smack" % "smack-extensions" % smackVer
@@ -18,8 +19,7 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-kernel" % "0.6.0",
   "org.typelevel" %% "cats-core" % "0.6.0",
   "org.typelevel" %% "cats-free" % "0.6.0",
-  "com.lihaoyi" %% "scalarx" % "0.3.1",
-  "org.scalactic" % "scalactic_2.11" % "2.2.5"
+  "io.dylemma"    %% "scala-frp" % "1.2"  // todo: published local atm
 )
 
 libraryDependencies ++= Seq(
