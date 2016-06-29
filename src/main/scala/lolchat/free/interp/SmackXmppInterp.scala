@@ -27,6 +27,8 @@ import scala.util.Try
 object SmackXmppInterp extends ChatInterpreter[ChatResult] {
   private var sessions = Map.empty[Session, (XMPPTCPConnection, Presence)]
 
+  def sessionCount: Int = sessions.size
+
   def interpreter: Interpreter = new Interpreter {
     def apply[A](fa: ChatF[A]): ChatResult[A] = fa match {
       case Login(sess)                            => login(sess)
@@ -152,7 +154,9 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
   private def logout(sess: Session): ChatResult[Unit] =
     getConnection(sess) { conn =>
       ReconnectionManager.getInstanceFor(conn).disableAutomaticReconnection()
-      ChatResult.right(conn.disconnect())
+      conn.disconnect()
+      sessions = sessions - sess
+      ChatResult.right(())
     }
 
   private def changeAppearance(sess: Session, appearance: Appearance): ChatResult[Unit] =
