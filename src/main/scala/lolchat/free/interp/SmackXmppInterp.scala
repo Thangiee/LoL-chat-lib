@@ -212,7 +212,7 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
       val status =
         s"""
           |<body>
-          |<profileIcon>${profile.profileIconId}</profileIcon>
+          |<profileIcon>${profile.iconId}</profileIcon>
           |<level>${profile.level}</level>
           |<wins>${profile.wins}</wins>
           |<tier>${profile.tier}</tier>

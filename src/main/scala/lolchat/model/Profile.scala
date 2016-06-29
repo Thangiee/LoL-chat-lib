@@ -1,7 +1,7 @@
 package lolchat.model
 
 case class Profile(
-  profileIconId: Int = 1,
+  iconId: Int = 1,
   level: Int = 1,
   wins: Int = 0,
   tier: String = "",
