@@ -29,9 +29,9 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
 
   def interpreter: Interpreter = new Interpreter {
     def apply[A](fa: ChatF[A]): ChatResult[A] = fa match {
-      case Login(sess)                            => doLogin(sess)
+      case Login(sess)                            => login(sess)
       case Logout(sess)                           => logout(sess)
-      case ChangeAppearance(sess, app)            => doChangeAppearance(sess, app)
+      case ChangeAppearance(sess, app)            => changeAppearance(sess, app)
       case Friends(sess)                          => getFriends(sess)
       case SendMsg(sess, toId, txt)               => sendMsg(sess, toId, txt)
       case SendFriendReq(sess, id)                => sendFriendReq(sess, id)
@@ -44,7 +44,7 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
     }
   }
 
-  private def doLogin(sess: Session): ChatResult[Unit] = {
+  private def login(sess: Session): ChatResult[Unit] = {
 
     def attemptLogin(conn: XMPPTCPConnection): ChatResult[Unit] = {
       ChatResult(Xor.catchNonFatal {
@@ -155,7 +155,7 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
       ChatResult.right(conn.disconnect())
     }
 
-  private def doChangeAppearance(sess: Session, appearance: Appearance): ChatResult[Unit] =
+  private def changeAppearance(sess: Session, appearance: Appearance): ChatResult[Unit] =
     modifyPresence(sess) { presence =>
       appearance match {
         case Online  => presence.setType(Presence.Type.available); presence.setMode(Presence.Mode.chat)

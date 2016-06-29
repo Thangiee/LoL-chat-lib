@@ -6,11 +6,11 @@ import scala.language.higherKinds
 
 sealed trait ChatF[A]
 object ChatF {
-  case class Login(session: Session) extends ChatF[Unit]
+  case class Login(sess: Session) extends ChatF[Unit]
   case class Logout(sess: Session) extends ChatF[Unit]
-  case class ChangeAppearance(session: Session, appearance: Appearance) extends ChatF[Unit]
-  case class Friends(session: Session) extends ChatF[Vector[Friend]]
-  case class SendMsg(session: Session, toId: String, txt: String) extends ChatF[Unit]
+  case class ChangeAppearance(sess: Session, appearance: Appearance) extends ChatF[Unit]
+  case class Friends(sess: Session) extends ChatF[Vector[Friend]]
+  case class SendMsg(sess: Session, toId: String, txt: String) extends ChatF[Unit]
   case class SendFriendReq(sess: Session, id: String) extends ChatF[Unit]
   case class RemoveFriend(sess: Session, id: String) extends ChatF[Unit]
   case class GroupNames(sess: Session) extends ChatF[Vector[String]]
