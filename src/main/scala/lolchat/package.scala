@@ -14,4 +14,10 @@ package object lolchat extends AnyRef with ops {
   type ChatResult[A] = XorT[Future, ChatError, A]
   type ExeCtx = ExecutionContext
   type ErrMsg = String
+
+  private[lolchat] implicit val exeCtx = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(16))
+  implicit val futureInstance = cats.implicits.futureInstance
+
+  val LoLChat = free.interp.SmackXmppInterp
+
 }
