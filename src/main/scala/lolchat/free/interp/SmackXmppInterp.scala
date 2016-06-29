@@ -42,7 +42,7 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
       case CreateFriendGroup(sess, groupName)     => createFriendGroup(sess, groupName)
       case MoveFriendToGroup(sess, friend, group) => moveFriendToGroup(sess, friend, group)
       case GetProfile(sess)                       => getProfile(sess)
-      case UpdateProfile(sess, profile)           => udpateProfile(sess, profile)
+      case UpdateProfile(sess, profile)           => updateProfile(sess, profile)
     }
   }
 
@@ -207,15 +207,15 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
       case None => ChatResult.left[Profile](ChatError("Session not found. Try logging in first."))
     }
 
-  private def udpateProfile(sess: Session, profile: Profile): ChatResult[Unit] = {
+  private def updateProfile(sess: Session, profile: Profile): ChatResult[Unit] = {
     modifyPresence(sess)(presence => {
       val status =
         s"""
           |<body>
           |<profileIcon>${profile.iconId}</profileIcon>
           |<level>${profile.level}</level>
-          |<wins>${profile.wins}</wins>
           |<tier>${profile.tier}</tier>
+          |<championMasteryScore>${profile.masteryScore}</championMasteryScore>
           |<rankedLeagueDivision>${profile.division}</rankedLeagueDivision>
           |<rankedLeagueTier>${profile.tier}</rankedLeagueTier>
           |<rankedLeagueQueue>RANKED_SOLO_5x5</rankedLeagueQueue>
