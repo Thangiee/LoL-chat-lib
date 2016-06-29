@@ -11,6 +11,8 @@ trait ops {
 
   def login: ChatOp[Unit] = ChatOp(sess => Free.liftF(ChatF.Login(sess)))
 
+  def logout: ChatOp[Unit] = ChatOp(sess => Free.liftF(ChatF.Logout(sess)))
+
   def offlineLogin: ChatOp[Unit] = for {_ <- login; _ <- appearOffline } yield ()
 
   def appearOnline: ChatOp[Unit] = ChatOp(sess => Free.liftF(ChatF.ChangeAppearance(sess, Online)))

@@ -30,6 +30,7 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
   def interpreter: Interpreter = new Interpreter {
     def apply[A](fa: ChatF[A]): ChatResult[A] = fa match {
       case Login(sess)                            => doLogin(sess)
+      case Logout(sess)                           => logout(sess)
       case ChangeAppearance(sess, app)            => doChangeAppearance(sess, app)
       case Friends(sess)                          => getFriends(sess)
       case SendMsg(sess, toId, txt)               => sendMsg(sess, toId, txt)
@@ -147,6 +148,12 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
         })
     }
   }
+
+  private def logout(sess: Session): ChatResult[Unit] =
+    getConnection(sess) { conn =>
+      ReconnectionManager.getInstanceFor(conn).disableAutomaticReconnection()
+      ChatResult.right(conn.disconnect())
+    }
 
   private def doChangeAppearance(sess: Session, appearance: Appearance): ChatResult[Unit] =
     modifyPresence(sess) { presence =>
