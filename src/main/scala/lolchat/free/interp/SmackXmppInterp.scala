@@ -163,7 +163,7 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
     modifyPresence(sess) { presence =>
       appearance match {
         case Online  => presence.setType(Presence.Type.available); presence.setMode(Presence.Mode.chat)
-        case Offline => presence.setType(Presence.Type.unavailable)
+        case Offline => presence.setType(Presence.Type.unavailable); presence.setMode(Presence.Mode.away)
         case Away => presence.setType(Presence.Type.available); presence.setMode(Presence.Mode.away)
       }
     }
@@ -235,7 +235,6 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
   private def mkFriend(entry: RosterEntry, presence: Presence): Friend = {
     val status = Try(presence.getStatus.replace("&apos;", "")).getOrElse("")
     val parseStatus: (String) => Option[String] = parseXml(status)(_)(identity)
-
     Friend(
       name = entry.getName,
       id = parseId(entry.getUser).getOrElse("-1"),
@@ -244,7 +243,7 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
         case Presence.Mode.away => AFK
         case p                  => Busy
       },
-      isOnline = presence.getStatus != null,
+      isOnline = !(presence.getType == Presence.Type.unavailable),
       groupName = entry.getGroups.map(_.getName).toVector,
       selectedChamp = parseStatus("skinname"),
       gameStatus = parseStatus("gameStatus"),
