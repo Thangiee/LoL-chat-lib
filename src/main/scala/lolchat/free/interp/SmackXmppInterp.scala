@@ -185,7 +185,7 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
   }
 
   private def sendFriendReq(sess: Session, id: String): ChatResult[Unit] =
-    sendPkt(sess, id, new Presence(Presence.Type.subscribed))
+    sendPkt(sess, id, new Presence(Presence.Type.subscribe))
 
   private def removeFriend(sess: Session, id: String): ChatResult[Unit] =
     sendPkt(sess, id, new Presence(Presence.Type.unsubscribed))
