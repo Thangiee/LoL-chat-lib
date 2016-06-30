@@ -1,3 +1,4 @@
+import cats.data.Xor
 import lolchat._
 import org.scalatest.concurrent.AsyncAssertions.Waiter
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
@@ -34,6 +35,18 @@ class MessagingSpec extends BaseSpec {
 
     LoLChat.run(sendMsg(bob.summId, "hello world")(aliceSess))
     waiter.await(Timeout(10.seconds))
+  }
+
+  it should "be able to send a message to a friend using their in game name" in {
+    whenReady(LoLChat.run(sendMsgToFriend(alice.inGameName, "testing")(bobSess))) { res =>
+      res should be(Xor.Right(None)) // i.e. no error
+    }
+  }
+
+  "sendMsgToFriend that not on user's friend list" should "yield an err message" in {
+    whenReady(LoLChat.run(sendMsgToFriend("fakeFriend", "testing")(bobSess))) { res =>
+      res should be(Xor.Right(Some("fakeFriend not in your friends list."))) // i.e. no error
+    }
   }
 
 }

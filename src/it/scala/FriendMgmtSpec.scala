@@ -71,4 +71,11 @@ class FriendMgmtSpec extends BaseSpec {
     waiter.await(Timeout(10.seconds))
     events should be(mutable.Queue[FriendListEvent](FriendRemoved(id), FriendAdded(id)))
   }
+
+  it should "be able to get online friends" in {
+    whenReady(LoLChat.run(onlineFriends(aliceSess))) { res =>
+      val onFriends: Vector[Friend] = res.getOrElse(fail("Fail to get online friends"))
+      onFriends.find(_.id == bob.summId) shouldBe defined
+    }
+  }
 }
