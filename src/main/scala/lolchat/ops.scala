@@ -42,14 +42,14 @@ trait ops {
 
   def removeFriend(id: String): ChatOp[Unit] = ChatOp(sess => Free.liftF(RemoveFriend(sess, id)))
 
-  def friendGroupsName: ChatOp[Vector[String]] = ChatOp(sess => Free.liftF(GroupNames(sess)))
+  def groupNames: ChatOp[Vector[String]] = ChatOp(sess => Free.liftF(GroupNames(sess)))
 
-  def createFriendGroup(name: String): ChatOp[Unit] = ChatOp(sess => Free.liftF(CreateFriendGroup(sess, name)))
+  def createGroup(name: String): ChatOp[Unit] = ChatOp(sess => Free.liftF(CreateFriendGroup(sess, name)))
 
   def moveFriendToGroup(friendName: String, group: String): ChatOp[Option[ErrMsg]] =
     for {
       friend <- friendByName(friendName)
-      _      <- if (friend.isDefined) createFriendGroup(group) else pure()
+      _      <- if (friend.isDefined) createGroup(group) else pure()
       result <- friend match {
         case Some(f) => ChatOp(sess => Free.liftF(MoveFriendToGroup(sess, f, group))).map(_ => None)
         case None    => pure(Some(s"$friendName not in your friends list."))
