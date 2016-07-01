@@ -1,4 +1,5 @@
-# League-of-Legend-Chat-Lib-Scala
+# LoL Chat Lib
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/246948ed6dc640a48210979bf5126b66)](https://www.codacy.com/app/thangiee0/LoL-chat-lib?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Thangiee/LoLChat-lib&amp;utm_campaign=Badge_Grade)
 [![Dependency Status](https://www.versioneye.com/user/projects/557fbd2f38666400200000dd/badge.svg?style=flat)](https://www.versioneye.com/user/projects/557fbd2f38666400200000dd)
 
 Pure functional library for interacting with League of Legends chat servers.
@@ -15,7 +16,7 @@ Setup
     
     libraryDependencies ++= Seq(
       "org.igniterealtime.smack" % "smack-java7" % "4.1.7",
-      "com.github.thangiee" %% "league-of-legend-chat-lib-scala" % "0.3.0"
+      "com.github.thangiee" %% "lol-chat-lib" % "0.3.0"
     ) 
     ```
     
@@ -27,7 +28,7 @@ Setup
     
     libraryDependencies ++= Seq(
       "org.igniterealtime.smack" % "smack-android" % "4.1.7",
-      "com.github.thangiee" %% "league-of-legend-chat-lib-scala" % "0.3.0"
+      "com.github.thangiee" %% "lol-chat-lib" % "0.3.0"
     )
     ```
   
@@ -73,11 +74,11 @@ LoLChat.run(getFriends(sess)).fold(
 )
 ```
 
-**See all operations you can use [here](#src\main\scala\lolchat\ops.scala)**
+**See all operations for LoLChat [HERE](#https://github.com/Thangiee/LoL-chat-lib/blob/master/src/main/scala/lolchat/ops.scala)**
 
 ---
 
-Each Session also contain event streams:
+Each Session also contains the following event streams:
 
 * Incoming message stream
 
