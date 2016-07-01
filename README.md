@@ -74,7 +74,7 @@ LoLChat.run(getFriends(sess)).fold(
 )
 ```
 
-**See all operations for LoLChat [HERE](#https://github.com/Thangiee/LoL-chat-lib/blob/master/src/main/scala/lolchat/ops.scala)**
+**See all operations for LoLChat [HERE](https://github.com/Thangiee/LoL-chat-lib/blob/master/src/main/scala/lolchat/ops.scala)**
 
 ---
 

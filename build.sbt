@@ -1,7 +1,7 @@
 
 lazy val root = (project in file("."))
   .settings(
-    name := "League-of-Legend-Chat-Lib-Scala",
+    name := "LoL-chat-lib",
     version := "0.3.0",
     scalaVersion := "2.11.8",
     scalacOptions ++= Seq("-Xexperimental"),
@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
     publishMavenStyle := true,
     resolvers += Resolver.jcenterRepo,
     licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
-    bintrayVcsUrl := Some("https://github.com/Thangiee/League-of-Legend-Chat-Lib-Scala"),
+    bintrayVcsUrl := Some("https://github.com/Thangiee/LoL-chat-lib"),
     bintrayReleaseOnPublish in ThisBuild := false, // 1. publish 2. bintrayRelease
 
     libraryDependencies ++= {
