@@ -2,7 +2,7 @@
 lazy val root = (project in file("."))
   .settings(
     name := "League-of-Legend-Chat-Lib-Scala",
-    version := "0.2.1",
+    version := "0.3.0",
     scalaVersion := "2.11.8",
     scalacOptions ++= Seq("-Xexperimental"),
     organization := "com.github.thangiee",
@@ -29,7 +29,7 @@ lazy val root = (project in file("."))
         "org.typelevel" %% "cats-kernel" % catsVer,
         "org.typelevel" %% "cats-core" % catsVer,
         "org.typelevel" %% "cats-free" % catsVer,
-        "io.dylemma"    %% "scala-frp" % "1.2"  // todo: published local atm
+        "com.github.thangiee" %% "scala-frp" % "1.2"
       )
     },
 
