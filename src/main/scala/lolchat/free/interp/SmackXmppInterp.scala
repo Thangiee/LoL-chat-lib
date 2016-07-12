@@ -29,7 +29,7 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
 
   def sessionCount: Int = sessions.size
 
-  def interpreter: Interpreter = new Interpreter {
+  val interpreter: Interpreter = new Interpreter {
     def apply[A](fa: ChatF[A]): ChatResult[A] = fa match {
       case Login(sess)                            => login(sess)
       case Logout(sess)                           => logout(sess)
