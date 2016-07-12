@@ -3,6 +3,7 @@ import lolchat._
 import lolchat.model.{ChatError, Region, Session}
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{Millis, Seconds, Span}
 
 trait BaseSpec extends FlatSpec with Matchers with ScalaFutures with BeforeAndAfterEach with BeforeAndAfterAll {
   val bob   = TestAcc("TestAccountBob", "testtest123", "68659985", "B0B123")
@@ -12,6 +13,8 @@ trait BaseSpec extends FlatSpec with Matchers with ScalaFutures with BeforeAndAf
   val aliceSess = Session(alice.user, alice.pass, Region.NA, acceptFriendRequest = true)
 
   def whenReady[A, B](res: ChatResult[A])(f: Xor[ChatError, A] => B): B = whenReady(res.value)(f)
+
+  implicit val defaultPatience = PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
 }
 
 case class TestAcc(user: String, pass: String, summId: String, inGameName: String)
