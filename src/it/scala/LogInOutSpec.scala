@@ -18,7 +18,7 @@ class LogInOutSpec extends BaseSpec {
   it should "result in a ChatError given invalid credentials" in {
     val session = Session(bob.user, "badpass", Region.NA)
     whenReady(LoLChat.run(login(session))) { res =>
-      res should be(Xor.left(ChatError("Invalid username and/or password.")))
+      res should be(Xor.left(ChatError("Invalid username and/or password.", Some("SASLError using PLAIN: not-authorized"))))
     }
   }
 

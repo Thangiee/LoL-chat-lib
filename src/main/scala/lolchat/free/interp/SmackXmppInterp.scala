@@ -60,10 +60,10 @@ object SmackXmppInterp extends ChatInterpreter[ChatResult] {
 
         Roster.getInstanceFor(conn).reloadAndWait()
       } leftMap {
-        case e: SASLErrorException  => ChatError("Invalid username and/or password.")
-        case e: NoResponseException => ChatError("No response from the server at the moment.")
-        case e: ConnectionException => ChatError("Unable to connect to the server.");
-        case e: Throwable           => ChatError(e.getMessage, e)
+        case e: SASLErrorException  => ChatError("Invalid username and/or password.", e)
+        case e: NoResponseException => ChatError("No response from the server at the moment.", e)
+        case e: ConnectionException => ChatError("Unable to connect to the server.", e);
+        case e: Throwable           => ChatError("Unexpected error. See detail value for more info.", e)
       } leftMap { err =>
         conn.disconnect()
         err
