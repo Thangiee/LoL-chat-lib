@@ -2,7 +2,7 @@
 lazy val root = (project in file("."))
   .settings(
     name := "LoL-chat-lib",
-    version := "0.3.0",
+    version := "0.3.1",
     scalaVersion := "2.11.8",
     scalacOptions ++= Seq("-Xexperimental"),
     organization := "com.github.thangiee",
