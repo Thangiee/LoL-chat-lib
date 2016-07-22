@@ -1,17 +1,26 @@
 
-lazy val root = (project in file("."))
+lazy val commonSettings = Seq(
+  version := "0.3.2",
+  scalaVersion := "2.11.8",
+  scalacOptions ++= Seq("-Xexperimental"),
+  organization := "com.github.thangiee",
+  publishMavenStyle := true,
+  resolvers += Resolver.jcenterRepo,
+  licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
+  bintrayVcsUrl := Some("https://github.com/Thangiee/LoL-chat-lib"),
+  bintrayReleaseOnPublish in ThisBuild := false // 1. publish 2. bintrayRelease
+)
+
+lazy val core = project
+  .settings(commonSettings)
+  .settings(
+    name := "LoL-chat-core"
+  )
+
+lazy val lib = project
+  .settings(commonSettings)
   .settings(
     name := "LoL-chat-lib",
-    version := "0.3.1",
-    scalaVersion := "2.11.8",
-    scalacOptions ++= Seq("-Xexperimental"),
-    organization := "com.github.thangiee",
-    publishMavenStyle := true,
-    resolvers += Resolver.jcenterRepo,
-    licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
-    bintrayVcsUrl := Some("https://github.com/Thangiee/LoL-chat-lib"),
-    bintrayReleaseOnPublish in ThisBuild := false, // 1. publish 2. bintrayRelease
-
     libraryDependencies ++= {
       val smackVer = "4.1.7"
       Seq(
@@ -44,4 +53,5 @@ lazy val root = (project in file("."))
     scalaSource in IntegrationTest := baseDirectory.value / "src/it/scala",
     TaskKey[Unit]("test-all") <<= (test in IntegrationTest).dependsOn(test in Test)
   )
+  .dependsOn(core)
 
