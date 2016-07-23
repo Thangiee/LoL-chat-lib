@@ -2,6 +2,7 @@ package lolchat.model
 
 import lolchat.util.EventStream
 import io.dylemma.frp.{EventSource, Observer}
+import lolchat.data.Region
 
 case class Session(user: String, passwd: String, region: Region, acceptFriendRequest: Boolean = false) {
   private[lolchat] val obs = new Observer {}

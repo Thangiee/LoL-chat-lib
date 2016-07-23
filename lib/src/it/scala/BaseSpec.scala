@@ -1,7 +1,7 @@
 import cats.data.Xor
 import lolchat.data._
-import lolchat.data.Error$
-import lolchat.model.{Region, Session}
+import lolchat.data.Error
+import lolchat.model.Session
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}

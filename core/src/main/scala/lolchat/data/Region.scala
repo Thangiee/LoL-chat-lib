@@ -1,4 +1,4 @@
-package lolchat.model
+package lolchat.data
 
 case class Region(url: String) extends AnyVal
 

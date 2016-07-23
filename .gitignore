@@ -83,7 +83,7 @@ project/boot/
 .history
 .lib/
 dist/*
-target/
+target/**
 lib_managed/
 src_managed/
 project/boot/
