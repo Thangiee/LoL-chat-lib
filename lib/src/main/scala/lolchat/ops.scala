@@ -60,11 +60,12 @@ trait ops {
 
   def setProfile(profile: Profile): ChatOp[Unit] = ChatOp(sess => Free.liftF(UpdateProfile(sess, profile)))
 
-  def modifyProfile(f: Profile => Profile): ChatOp[Unit] =
+  def modifyProfile(f: Profile => Profile): ChatOp[Profile] =
     for {
       profile <- getProfile
-      res     <- setProfile(f(profile))
-    } yield res
+      updatedProfile = f(profile)
+      _       <- setProfile(updatedProfile)
+    } yield updatedProfile
 
 }
 
