@@ -21,6 +21,14 @@ class LogInOutSpec extends BaseSpec {
     whenReady(LoLChat.run(login(session))) { res =>
       res should matchPattern { case Xor.Left(Error(401, _, _)) => }
     }
+
+    whenReady(LoLChat.run(login(Session("", "abc", Region.NA)))) { res =>
+      res should matchPattern { case Xor.Left(Error(400, _, _)) => }
+    }
+
+    whenReady(LoLChat.run(login(Session("abc", "", Region.NA)))) { res =>
+      res should matchPattern { case Xor.Left(Error(400, _, _)) => }
+    }
   }
 
   "Multiple login ops" should "not result in a ChatError" in {

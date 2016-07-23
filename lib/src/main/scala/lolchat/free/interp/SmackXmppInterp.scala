@@ -71,7 +71,7 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
       })
     }
 
-    (sess.passwd.isEmpty || sess.passwd.isEmpty, sessions.get(sess)) match {
+    (sess.user.isEmpty || sess.passwd.isEmpty, sessions.get(sess)) match {
       case (true, _)            => data.AsyncResult.left[Unit](data.Error(400, "Username and Password can't be empty."))
       case (_, Some((conn, _))) => attemptLogin(conn) // session exists already, login again only if need be
       case (false, None)        =>                    // login for new session
