@@ -1,5 +1,6 @@
 import cats.data.Xor
 import lolchat._
+import lolchat.data._
 import lolchat.model.Profile
 
 class ProfileSpec extends BaseSpec {
@@ -34,5 +35,9 @@ class ProfileSpec extends BaseSpec {
     } yield p
 
     whenReady(LoLChat.run(prg(bobSess)))(res => res should be(Xor.right(profile.copy(level = 30))))
+  }
+
+  "a" should "b" in {
+    LoLChat.run(login(bobSess)).map(_ => println("done"))
   }
 }

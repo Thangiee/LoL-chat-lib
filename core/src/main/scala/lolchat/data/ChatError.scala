@@ -1,4 +1,4 @@
-package lolchat.model
+package lolchat.data
 
 import scala.util.Try
 

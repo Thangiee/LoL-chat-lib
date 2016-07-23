@@ -8,7 +8,16 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.jcenterRepo,
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
   bintrayVcsUrl := Some("https://github.com/Thangiee/LoL-chat-lib"),
-  bintrayReleaseOnPublish in ThisBuild := false // 1. publish 2. bintrayRelease
+  bintrayReleaseOnPublish in ThisBuild := false, // 1. publish 2. bintrayRelease
+  libraryDependencies ++= {
+    val catsVer = "0.6.1"
+    Seq(
+      "org.typelevel" %% "cats-macros" % catsVer,
+      "org.typelevel" %% "cats-kernel" % catsVer,
+      "org.typelevel" %% "cats-core" % catsVer,
+      "org.typelevel" %% "cats-free" % catsVer
+    )
+  }
 )
 
 lazy val core = project
@@ -31,16 +40,7 @@ lazy val lib = project
       )
     },
 
-    libraryDependencies ++= {
-      val catsVer = "0.6.0"
-      Seq(
-        "org.typelevel" %% "cats-macros" % catsVer,
-        "org.typelevel" %% "cats-kernel" % catsVer,
-        "org.typelevel" %% "cats-core" % catsVer,
-        "org.typelevel" %% "cats-free" % catsVer,
-        "com.github.thangiee" %% "scala-frp" % "1.2"
-      )
-    },
+    libraryDependencies += "com.github.thangiee" %% "scala-frp" % "1.2",
 
     libraryDependencies ++= Seq(
       "org.scalatest" % "scalatest_2.11" % "2.2.5" % "it,test"

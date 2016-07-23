@@ -1,5 +1,6 @@
 import cats.data.Xor
 import lolchat._
+import lolchat.data._
 import org.scalatest.concurrent.AsyncAssertions.Waiter
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 

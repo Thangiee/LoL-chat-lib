@@ -1,5 +1,6 @@
 import cats.data.Xor
 import lolchat._
+import lolchat.data._
 import lolchat.model._
 
 class LogInOutSpec extends BaseSpec {
@@ -18,7 +19,7 @@ class LogInOutSpec extends BaseSpec {
   it should "result in a ChatError given invalid credentials" in {
     val session = Session(bob.user, "badpass", Region.NA)
     whenReady(LoLChat.run(login(session))) { res =>
-      res should be(Xor.left(ChatError("Invalid username and/or password.", Some("SASLError using PLAIN: not-authorized"))))
+      res should be(Xor.left(data.ChatError("Invalid username and/or password.", Some("SASLError using PLAIN: not-authorized"))))
     }
   }
 
@@ -54,7 +55,7 @@ class LogInOutSpec extends BaseSpec {
 
   "Running an operation before login" should "result in a ChatError" in {
     whenReady(LoLChat.run(getProfile(bobSess))) { res =>
-      res should be(Xor.left(ChatError("Session not found. Try logging in first.")))
+      res should be(Xor.left(data.ChatError("Session not found. Try logging in first.")))
     }
   }
 }
