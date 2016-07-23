@@ -7,7 +7,9 @@ import scala.concurrent.Future
 
 object ChatResult {
 
-  def apply[A](xor: => Xor[ChatError, A])(implicit ec: ExeCtx): ChatResult[A] = XorT(Future(xor))
+  def apply[A](futureXor: Future[Xor[ChatError, A]]): ChatResult[A] = XorT(futureXor)
+
+  def apply[A](xor: => Xor[ChatError, A])(implicit ec: ExeCtx): ChatResult[A] = XorT(Future.successful(xor))
 
   def right[A](a: A)(implicit ec: ExeCtx): ChatResult[A] = XorT.right[Future, ChatError, A](Future.successful(a))
 
