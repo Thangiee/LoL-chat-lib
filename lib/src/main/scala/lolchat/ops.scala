@@ -9,6 +9,8 @@ trait ops {
 
   def pure[A](a: A): ChatOp[A] = ChatOp(_ => Free.pure(a))
 
+  def isLogin: ChatOp[Boolean] = ChatOp(sess => Free.liftF(ChatF.IsLogin(sess)))
+
   def login: ChatOp[Unit] = ChatOp(sess => Free.liftF(ChatF.Login(sess)))
 
   def logout: ChatOp[Unit] = ChatOp(sess => Free.liftF(ChatF.Logout(sess)))

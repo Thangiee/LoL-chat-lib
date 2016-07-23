@@ -11,8 +11,10 @@ class LogInOutSpec extends BaseSpec {
   }
 
   "Login" should "succeed given a valid LoL account" in {
-    whenReady(LoLChat.run(login(bobSess))) { res =>
-      res.isRight should be(true)
+    val prg = for { _ <- login; b <- isLogin } yield b
+
+    whenReady(LoLChat.run(prg(bobSess))) { res =>
+      res should matchPattern { case Xor.Right(true) => }
     }
   }
 

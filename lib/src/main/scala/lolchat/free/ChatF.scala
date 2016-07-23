@@ -6,6 +6,7 @@ import scala.language.higherKinds
 
 sealed trait ChatF[A]
 object ChatF {
+  case class IsLogin(sess: Session) extends ChatF[Boolean]
   case class Login(sess: Session) extends ChatF[Unit]
   case class Logout(sess: Session) extends ChatF[Unit]
   case class ChangeAppearance(sess: Session, appearance: Appearance) extends ChatF[Unit]

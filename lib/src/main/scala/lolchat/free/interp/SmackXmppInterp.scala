@@ -32,6 +32,7 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
 
   val interpreter: Interpreter = new Interpreter {
     def apply[A](fa: ChatF[A]): AsyncResult[A] = fa match {
+      case IsLogin(sess)                          => isLogin(sess)
       case Login(sess)                            => login(sess)
       case Logout(sess)                           => logout(sess)
       case ChangeAppearance(sess, app)            => changeAppearance(sess, app)
@@ -46,6 +47,9 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
       case UpdateProfile(sess, profile)           => updateProfile(sess, profile)
     }
   }
+
+  private def isLogin(sess: Session): AsyncResult[Boolean] =
+    getConnection(sess)(conn => AsyncResult.right(conn.isConnected && conn.isAuthenticated))
 
   private def login(sess: Session): AsyncResult[Unit] = {
 
