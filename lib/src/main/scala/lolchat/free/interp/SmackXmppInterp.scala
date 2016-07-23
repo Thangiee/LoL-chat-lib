@@ -49,7 +49,7 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
 
   private def login(sess: Session): AsyncResult[Unit] = {
 
-    def attemptLogin(conn: XMPPTCPConnection): AsyncResult[Unit] = {
+    def attemptLogin(conn: XMPPTCPConnection): AsyncResult[Unit] = { // todo: exception on blank username and filled passwd
       data.AsyncResult(Xor.catchNonFatal {
         if (!conn.isConnected) conn.connect()
         if (!conn.isAuthenticated) conn.login()
@@ -61,10 +61,10 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
 
         Roster.getInstanceFor(conn).reloadAndWait()
       } leftMap {
-        case e: SASLErrorException  => data.Error("Invalid username and/or password.", e)
-        case e: NoResponseException => data.Error("No response from the server at the moment.", e)
-        case e: ConnectionException => data.Error("Unable to connect to the server.", e);
-        case e: Throwable           => data.Error("Unexpected error. See detail value for more info.", e)
+        case e: SASLErrorException  => data.Error(401, "Invalid username and/or password.", e)
+        case e: NoResponseException => data.Error(503, "No response from the server at the moment.", e)
+        case e: ConnectionException => data.Error(503, "Unable to connect to the server.", e);
+        case e: Throwable           => data.Error(500, "Unexpected error. See detail value for more info.", e)
       } leftMap { err =>
         conn.disconnect()
         err
@@ -72,7 +72,7 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
     }
 
     (sess.passwd.isEmpty || sess.passwd.isEmpty, sessions.get(sess)) match {
-      case (true, _)            => data.AsyncResult.left[Unit](data.Error("Username and Password can't be empty."))
+      case (true, _)            => data.AsyncResult.left[Unit](data.Error(400, "Username and Password can't be empty."))
       case (_, Some((conn, _))) => attemptLogin(conn) // session exists already, login again only if need be
       case (false, None)        =>                    // login for new session
         val config = XMPPTCPConnectionConfiguration.builder()
@@ -205,7 +205,7 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
   private def getProfile(sess: Session): AsyncResult[Profile] =
     sessions.get(sess) match {
       case Some((_, presence)) => data.AsyncResult.right(Profile.parseXML(presence.getStatus))
-      case None => data.AsyncResult.left[Profile](data.Error("Session not found. Try logging in first."))
+      case None => data.AsyncResult.left[Profile](data.Error(401, "Session not found. Try logging in first."))
     }
 
   private def updateProfile(sess: Session, profile: Profile): AsyncResult[Unit] = {
@@ -269,12 +269,12 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
   private def modifyPresence(sess: Session)(modify: (Presence) => Unit): AsyncResult[Unit] =
     sessions.get(sess) match {
       case Some((conn, p)) => modify(p); data.AsyncResult.catchNonFatal(conn.sendStanza(p)).map { _ => sessions = sessions + (sess -> (conn, p)) }
-      case None => data.AsyncResult.left[Unit](data.Error("Session not found. Try logging in first."))
+      case None => data.AsyncResult.left[Unit](data.Error(401, "Session not found. Try logging in first."))
     }
 
   private def getConnection[A](sess: Session)(f: XMPPTCPConnection => AsyncResult[A]): AsyncResult[A] =
     sessions.get(sess) match {
       case Some((conn, _)) => f(conn)
-      case None => data.AsyncResult.left[A](data.Error("Session not found. Try logging in first."))
+      case None => data.AsyncResult.left[A](data.Error(401, "Session not found. Try logging in first."))
     }
 }

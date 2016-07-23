@@ -21,5 +21,5 @@ object AsyncResult {
     futureInstance.attemptT(Future(f)).leftMap(g)
 
   def catchNonFatal[A](f: => A)(implicit ctx: ExeCtx): AsyncResult[A] =
-    futureInstance.attemptT(Future(f)).leftMap(err => Error(err.getMessage, err))
+    futureInstance.attemptT(Future(f)).leftMap(err => Error(500, err.getMessage, err))
 }
