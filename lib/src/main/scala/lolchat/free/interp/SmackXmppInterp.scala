@@ -36,6 +36,7 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
       case Login(sess)                            => login(sess)
       case Logout(sess)                           => logout(sess)
       case ChangeAppearance(sess, app)            => changeAppearance(sess, app)
+      case GetAppearance(sess)                    => getAppearance(sess)
       case Friends(sess)                          => getFriends(sess)
       case SendMsg(sess, toId, txt)               => sendMsg(sess, toId, txt)
       case SendFriendReq(sess, id)                => sendFriendReq(sess, id)
@@ -171,6 +172,19 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
         case Offline => presence.setType(Presence.Type.unavailable); presence.setMode(Presence.Mode.away)
         case Away => presence.setType(Presence.Type.available); presence.setMode(Presence.Mode.away)
       }
+    }
+
+  private def getAppearance(sess: Session): AsyncResult[Appearance] =
+    sessions.get(sess) match {
+      case Some((_, presence)) =>
+        val appearance = (presence.getType, presence.getMode) match {
+          case (Presence.Type.available, Presence.Mode.chat) => Online
+          case (Presence.Type.unavailable, _)                => Offline
+          case (Presence.Type.available, Presence.Mode.away) => Away
+          case _ => Offline
+        }
+        AsyncResult.right(appearance)
+      case None => AsyncResult.left[Appearance](data.Error(401, "Session not found. Try logging in first."))
     }
 
   private def getFriends(sess: Session): AsyncResult[Vector[Friend]] = getConnection(sess) { conn =>

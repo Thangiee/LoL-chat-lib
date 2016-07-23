@@ -10,6 +10,7 @@ object ChatF {
   case class Login(sess: Session) extends ChatF[Unit]
   case class Logout(sess: Session) extends ChatF[Unit]
   case class ChangeAppearance(sess: Session, appearance: Appearance) extends ChatF[Unit]
+  case class GetAppearance(sess: Session) extends ChatF[Appearance]
   case class Friends(sess: Session) extends ChatF[Vector[Friend]]
   case class SendMsg(sess: Session, toId: String, txt: String) extends ChatF[Unit]
   case class SendFriendReq(sess: Session, id: String) extends ChatF[Unit]

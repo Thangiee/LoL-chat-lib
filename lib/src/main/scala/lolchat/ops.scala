@@ -23,6 +23,8 @@ trait ops {
 
   def appearAway: ChatOp[Unit] = ChatOp(sess => Free.liftF(ChatF.ChangeAppearance(sess, Away)))
 
+  def getAppearance: ChatOp[Appearance] = ChatOp(sess => Free.liftF(ChatF.GetAppearance(sess)))
+
   def friends: ChatOp[Vector[Friend]] = ChatOp(sess => Free.liftF(ChatF.Friends(sess)))
 
   def onlineFriends: ChatOp[Vector[Friend]] = friends.map(_.filter(_.isOnline))

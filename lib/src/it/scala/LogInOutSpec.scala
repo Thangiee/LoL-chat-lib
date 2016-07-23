@@ -11,10 +11,10 @@ class LogInOutSpec extends BaseSpec {
   }
 
   "Login" should "succeed given a valid LoL account" in {
-    val prg = for { _ <- login; b <- isLogin } yield b
+    val prg = for { _ <- login; b <- isLogin; a <- getAppearance } yield (b, a)
 
     whenReady(LoLChat.run(prg(bobSess))) { res =>
-      res should matchPattern { case Xor.Right(true) => }
+      res should matchPattern { case Xor.Right((true, Online)) => }
     }
   }
 
@@ -54,10 +54,15 @@ class LogInOutSpec extends BaseSpec {
   }
 
   it should "be able to login offline" in {
-    whenReady(LoLChat.run(offlineLogin(bobSess)))(identity)
+    val prg1 = for { _ <- offlineLogin; a <- getAppearance } yield a
 
-    val prg = for { _ <- login; f <- friendByName(bob.inGameName) } yield f
-    whenReady(LoLChat.run(prg(aliceSess))) { res =>
+    whenReady(LoLChat.run(prg1(bobSess))) { res =>
+      res should matchPattern { case Xor.Right(Offline) => }
+    }
+
+    val prg2 = for { _ <- login; f <- friendByName(bob.inGameName) } yield f
+
+    whenReady(LoLChat.run(prg2(aliceSess))) { res =>
       val f: Friend = res.fold(err => fail(err.msg), _.getOrElse(fail(s"${bob.inGameName} not on FL")))
       f.isOnline should be(false)
     }
