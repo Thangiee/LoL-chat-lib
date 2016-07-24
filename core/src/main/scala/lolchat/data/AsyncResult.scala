@@ -9,7 +9,7 @@ object AsyncResult {
 
   def apply[A](futureXor: Future[Xor[Error, A]])(implicit ctx: ExeCtx): AsyncResult[A] = XorT(futureXor)
 
-  def apply[A](xor: => Xor[Error, A])(implicit ctx: ExeCtx): AsyncResult[A] = XorT(futureInstance.pure(xor))
+  def apply[A](xor: => Xor[Error, A])(implicit ctx: ExeCtx): AsyncResult[A] = XorT(Future(xor))
 
   def right[A](a: A)(implicit ctx: ExeCtx): AsyncResult[A] = XorT.right[Future, Error, A](futureInstance.pure(a))
 
