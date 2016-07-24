@@ -30,6 +30,8 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
 
   def sessionCount: Int = sessions.size
 
+  def findSession(p: Session => Boolean): Option[Session] = sessions.keys.find(p)
+
   val interpreter: Interpreter = new Interpreter {
     def apply[A](fa: ChatF[A]): AsyncResult[A] = fa match {
       case IsLogin(sess)                          => isLogin(sess)
