@@ -276,7 +276,8 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
       rankedTier = parseStatus("rankedLeagueTier"),
       rankedDivision = parseStatus("rankedLeagueDivision"),
       leagueName = parseStatus("rankedLeagueName"),
-      gameStartTime = parseStatus("timeStamp").map(_.toLong)
+      gameStartTime = parseStatus("timeStamp").map(_.toLong),
+      profileIconId = parseStatus("profileIcon").map(_.toInt)
     )
   }
 

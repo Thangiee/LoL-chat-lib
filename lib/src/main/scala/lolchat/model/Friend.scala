@@ -14,6 +14,7 @@ case class Friend(
   rankedTier: Option[String],
   rankedDivision: Option[String],
   leagueName: Option[String],
-  gameStartTime: Option[Long]
+  gameStartTime: Option[Long],
+  profileIconId: Option[Int]
 )
 
