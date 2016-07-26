@@ -160,12 +160,14 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
   }
 
   private def logout(sess: Session): AsyncResult[Unit] =
-    getConnection(sess) { conn =>
-      ReconnectionManager.getInstanceFor(conn).disableAutomaticReconnection()
-      conn.disconnect()
-      sessions = sessions - sess
-      AsyncResult.right(())
-    }
+    for {
+      conn <- getConnection(sess)(AsyncResult.right(_))
+      _    <- AsyncResult.catchNonFatal {
+        ReconnectionManager.getInstanceFor(conn).disableAutomaticReconnection()
+        conn.disconnect()
+        sessions = sessions - sess
+      }
+    } yield ()
 
   private def changeAppearance(sess: Session, appearance: Appearance): AsyncResult[Unit] =
     modifyPresence(sess) { presence =>
