@@ -8,6 +8,8 @@ import scala.concurrent.duration._
 
 case class EventStream[+A](private val sess: Session, stream: frp.EventStream[A]) {
 
+  def clear(): Unit = stream.clear()
+
   /** Add a handler function that acts as a `sink` for items produced by this
    * `Source`. The `handler` is expected to return `true` as long as it remains
    * active. Once the `handler` function returns `false` in response to some

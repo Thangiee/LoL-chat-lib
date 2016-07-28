@@ -40,7 +40,7 @@ lazy val lib = project
       )
     },
 
-    libraryDependencies += "com.github.thangiee" %% "scala-frp" % "1.2",
+    libraryDependencies += "com.github.thangiee" %% "scala-frp" % "1.2.1",
 
     libraryDependencies ++= Seq(
       "org.scalatest" % "scalatest_2.11" % "2.2.5" % "it,test"
