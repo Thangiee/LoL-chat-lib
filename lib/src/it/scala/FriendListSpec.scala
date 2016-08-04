@@ -25,7 +25,7 @@ class FriendListSpec extends BaseSpec {
 
   "FriendUpdated event" should "be trigger by a friend appearing away" in {
     val waiter = new Waiter
-    bobSess.friendListStream.foreachEvent {
+    bobSess.friendListStream.map {
       case FriendUpdated(_) => waiter.dismiss()
       case event => fail(s"unexpected event $event")
     }
@@ -36,7 +36,7 @@ class FriendListSpec extends BaseSpec {
 
   it should "be trigger by a friend appearing offline" in {
     val waiter = new Waiter
-    bobSess.friendListStream.foreachEvent {
+    bobSess.friendListStream.map {
       case FriendUpdated(_) => waiter.dismiss()
       case event => fail(s"unexpected event $event")
     }
@@ -47,7 +47,7 @@ class FriendListSpec extends BaseSpec {
 
   it should "be trigger by a friend appearing online" in {
     val waiter = new Waiter
-    bobSess.friendListStream.foreachEvent {
+    bobSess.friendListStream.map {
       case FriendUpdated(_) => waiter.dismiss()
       case event => fail(s"unexpected event $event")
     }
@@ -58,7 +58,7 @@ class FriendListSpec extends BaseSpec {
 
   it should "be trigger by a friend updating their status" in {
     val waiter = new Waiter
-    bobSess.friendListStream.foreachEvent {
+    bobSess.friendListStream.map {
       case FriendUpdated(f) => waiter.dismiss()
       case event => fail(s"unexpected event $event")
     }

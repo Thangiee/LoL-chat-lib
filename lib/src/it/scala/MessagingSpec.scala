@@ -1,8 +1,9 @@
-import cats.data.Xor
+import cats.data.{OptionT, Xor}
 import lolchat._
 import lolchat.data._
 import org.scalatest.concurrent.AsyncAssertions.Waiter
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
+import rx.Rx
 
 import scala.concurrent.duration._
 
@@ -28,7 +29,7 @@ class MessagingSpec extends BaseSpec {
   "LoLChat" should "be able to send and receive message" in {
     val waiter = new Waiter
 
-    bobSess.msgStream.foreachEvent(msg => {
+    bobSess.msgStream.map(msg => {
       waiter(msg.fromId should be(alice.summId))
       waiter(msg.txt should be("hello world"))
       waiter.dismiss()

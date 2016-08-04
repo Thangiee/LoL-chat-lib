@@ -59,7 +59,7 @@ class FriendMgmtSpec extends BaseSpec {
     val waiter = new Waiter
     val events = mutable.Queue[FriendListEvent]()
 
-    bobSess.friendListStream.foreachEvent {
+    bobSess.friendListStream.map {
       case e: FriendAdded   => events.enqueue(e); waiter.dismiss()
       case e: FriendRemoved => events.enqueue(e); waiter.dismiss()
       case _ =>
