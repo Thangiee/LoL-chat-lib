@@ -5,6 +5,7 @@ import cats.free.Free
 import lolchat.data.ExeCtx
 import lolchat.free.ChatF
 import lolchat.model.Session
+import rx.{Ctx, Obs, Rx}
 
 import scala.concurrent.ExecutionContext
 import scala.language.higherKinds
@@ -17,6 +18,9 @@ package object lolchat extends AnyRef with ops {
   private[lolchat] implicit val exeCtx = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8))
   implicit def futureInstance(implicit exeCtx: ExeCtx) = cats.implicits.futureInstance
 
-  val LoLChat = free.interp.SmackXmppInterp
+  implicit class RxOptionOp[T](val rx: Rx[Option[T]]) extends AnyVal {
+    def foreachEvent(event: T => Unit)(implicit ctx: Ctx.Owner): Obs = rx.foreach(_.foreach(event))
+  }
 
+  val LoLChat = free.interp.SmackXmppInterp
 }

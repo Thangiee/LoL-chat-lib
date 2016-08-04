@@ -28,7 +28,7 @@ class MessagingSpec extends BaseSpec {
   "LoLChat" should "be able to send and receive message" in {
     val waiter = new Waiter
 
-    bobSess.msgStream.foreach(msg => {
+    bobSess.msgStream.foreachEvent(msg => {
       waiter(msg.fromId should be(alice.summId))
       waiter(msg.txt should be("hello world"))
       waiter.dismiss()

@@ -1,18 +1,15 @@
 package lolchat.model
 
-import lolchat.util.EventStream
-import io.dylemma.frp.{EventSource, Observer}
 import lolchat.data.Region
+import rx._
 
 case class Session(user: String, passwd: String, region: Region, acceptFriendRequest: Boolean = false) {
-  private[lolchat] val obs = new Observer {}
+  private[lolchat] val msgEventSrc = Var[Option[Msg]](None)
+  def msgStream(implicit ctx: Ctx.Owner): Rx[Option[Msg]] = Rx(msgEventSrc())
 
-  private[lolchat] val msgEventSrc = EventSource[Msg]()
-  val msgStream: EventStream[Msg] = EventStream(this, msgEventSrc)
+  private[lolchat] val friendListEventSrc = Var[Option[FriendListEvent]](None)
+  def friendListStream(implicit ctx: Ctx.Owner): Rx[Option[FriendListEvent]] = Rx(friendListEventSrc())
 
-  private[lolchat] val friendListEventSrc = EventSource[FriendListEvent]()
-  val friendListStream: EventStream[FriendListEvent] = EventStream(this, friendListEventSrc)
-
-  private[lolchat] val connectionEventSrc = EventSource[ConnectionEvent]()
-  val connectionEventStream: EventStream[ConnectionEvent] = EventStream(this, connectionEventSrc)
+  private[lolchat] val connectionEventSrc = Var[Option[ConnectionEvent]](None)
+  def connectionEventStream(implicit ctx: Ctx.Owner): Rx[Option[ConnectionEvent]] = Rx(connectionEventSrc())
 }

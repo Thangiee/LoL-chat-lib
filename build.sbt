@@ -1,6 +1,6 @@
 
 lazy val commonSettings = Seq(
-  version := "0.3.2",
+  version := "0.3.3",
   scalaVersion := "2.11.8",
   scalacOptions ++= Seq("-Xexperimental"),
   organization := "com.github.thangiee",
@@ -40,9 +40,8 @@ lazy val lib = project
       )
     },
 
-    libraryDependencies += "com.github.thangiee" %% "scala-frp" % "1.2.1",
-
     libraryDependencies ++= Seq(
+      "com.lihaoyi" %% "scalarx" % "0.3.1",
       "org.scalatest" % "scalatest_2.11" % "2.2.5" % "it,test"
     )
   )

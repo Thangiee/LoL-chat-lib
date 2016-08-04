@@ -2,7 +2,7 @@ import cats.data.Xor
 import lolchat._
 import lolchat.data._
 import lolchat.model._
-import org.scalatest.concurrent.AsyncAssertions.Waiter
+import org.scalatest.concurrent.AsyncAssertions.{Dismissals, Waiter}
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 
 import scala.collection.mutable
@@ -59,17 +59,17 @@ class FriendMgmtSpec extends BaseSpec {
     val waiter = new Waiter
     val events = mutable.Queue[FriendListEvent]()
 
-    bobSess.friendListStream.foreach {
-      case e: FriendAdded   => events.enqueue(e)
-      case e: FriendRemoved => events.enqueue(e)
-      case _ => waiter.dismiss()
+    bobSess.friendListStream.foreachEvent {
+      case e: FriendAdded   => events.enqueue(e); waiter.dismiss()
+      case e: FriendRemoved => events.enqueue(e); waiter.dismiss()
+      case _ =>
     }
 
     val id = alice.summId
     whenReady(LoLChat.run(removeFriend(id)(bobSess)))(identity)
     whenReady(LoLChat.run(sendFriendRequest(id)(bobSess)))(identity)
 
-    waiter.await(Timeout(10.seconds))
+    waiter.await(Timeout(10.seconds), Dismissals(2))
     events should be(mutable.Queue[FriendListEvent](FriendRemoved(id), FriendAdded(id)))
   }
 

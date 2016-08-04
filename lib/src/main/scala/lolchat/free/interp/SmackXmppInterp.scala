@@ -97,7 +97,7 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
           Roster.getInstanceFor(conn).setSubscriptionMode(SubscriptionMode.manual)
           conn.addAsyncStanzaListener(
             (stanza: Stanza) => parseId(stanza.getFrom).foreach(id => {
-              sess.friendListEventSrc.fire(FriendRequest(id))
+              sess.friendListEventSrc.update(Some(FriendRequest(id)))
               val response = new Presence(if (sess.acceptFriendRequest) Presence.Type.subscribed else Presence.Type.unsubscribed)
               response.setTo(stanza.getFrom)
               conn.sendStanza(response)
@@ -113,21 +113,21 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
         def setupMsgStream(): Unit = ChatManager.getInstanceFor(conn)
           .addChatListener((chat: SmackChat, _) =>
             chat.addMessageListener((_, msg: Message) =>
-              parseId(msg.getFrom).foreach(id => sess.msgEventSrc fire Msg(id, msg.getBody))))
+              parseId(msg.getFrom).foreach(id => sess.msgEventSrc update Some(Msg(id, msg.getBody)))))
 
         def setupFriendListEventStream(): Unit = {
           val roster: Roster = Roster.getInstanceFor(conn)
           roster.addRosterListener(new RosterListener {
             def entriesUpdated(addresses: util.Collection[String]): Unit = {}
             def entriesDeleted(addresses: util.Collection[String]): Unit =
-              addresses.flatMap(parseId).foreach(id => sess.friendListEventSrc.fire(FriendRemoved(id)))
+              addresses.flatMap(parseId).foreach(id => sess.friendListEventSrc.update(Some(FriendRemoved(id))))
             def entriesAdded(addresses: util.Collection[String]): Unit =
-              addresses.flatMap(parseId).foreach(id => sess.friendListEventSrc.fire(FriendAdded(id)))
+              addresses.flatMap(parseId).foreach(id => sess.friendListEventSrc.update(Some(FriendAdded(id))))
             def presenceChanged(presence: Presence): Unit = {
               val entry = roster.getEntry(presence.getFrom)
               if (entry != null) {
                 val f = mkFriend(entry, presence)
-                sess.friendListEventSrc.fire(FriendUpdated(f))
+                sess.friendListEventSrc.update(Some(FriendUpdated(f)))
               }
             }
           })
@@ -139,12 +139,12 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
 
           conn.addConnectionListener(new ConnectionListener {
             def connected(connection: XMPPConnection): Unit = {}
-            def reconnectionFailed(e: Exception): Unit = sess.connectionEventSrc.fire(ReconnectFailed)
-            def reconnectionSuccessful(): Unit = sess.connectionEventSrc.fire(Reconnected)
+            def reconnectionFailed(e: Exception): Unit = sess.connectionEventSrc.update(Some(ReconnectFailed))
+            def reconnectionSuccessful(): Unit = sess.connectionEventSrc.update(Some(Reconnected))
             def authenticated(connection: XMPPConnection, resumed: Boolean): Unit = {}
-            def connectionClosedOnError(e: Exception): Unit = sess.connectionEventSrc.fire(ConnectionLost)
+            def connectionClosedOnError(e: Exception): Unit = sess.connectionEventSrc.update(Some(ConnectionLost))
             def connectionClosed(): Unit = {}
-            def reconnectingIn(seconds: Int): Unit = sess.connectionEventSrc.fire(ReconnectIn(seconds))
+            def reconnectingIn(seconds: Int): Unit = sess.connectionEventSrc.update(Some(ReconnectIn(seconds)))
           })
         }
 

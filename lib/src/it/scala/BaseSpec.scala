@@ -5,8 +5,10 @@ import lolchat.model.Session
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
+import rx.Ctx
 
 trait BaseSpec extends FlatSpec with Matchers with ScalaFutures with BeforeAndAfterEach with BeforeAndAfterAll {
+    implicit val ctx: Ctx.Owner = Ctx.Owner.safe()
   val bob   = TestAcc("TestAccountBob", "testtest123", "68659985", "B0B123")
   val alice = TestAcc("TestAccountAlice", "testtest123", "68510001", "alice817")
 
