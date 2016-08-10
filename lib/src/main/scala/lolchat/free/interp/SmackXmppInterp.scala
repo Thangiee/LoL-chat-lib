@@ -135,7 +135,8 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
 
         def setupConnectionEventStream(): Unit = {
           ReconnectionManager.getInstanceFor(conn).enableAutomaticReconnection()
-          ReconnectionManager.getInstanceFor(conn).setReconnectionPolicy(ReconnectionPolicy.RANDOM_INCREASING_DELAY)
+          ReconnectionManager.getInstanceFor(conn).setReconnectionPolicy(ReconnectionPolicy.FIXED_DELAY)
+          ReconnectionManager.getInstanceFor(conn).setFixedDelay(5)
 
           conn.addConnectionListener(new ConnectionListener {
             def connected(connection: XMPPConnection): Unit = {}
