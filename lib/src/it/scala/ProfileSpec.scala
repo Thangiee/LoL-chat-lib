@@ -36,8 +36,4 @@ class ProfileSpec extends BaseSpec {
 
     whenReady(LoLChat.run(prg(bobSess)))(res => res should be(Xor.right(profile.copy(level = 30))))
   }
-
-  "a" should "b" in {
-    LoLChat.run(login(bobSess)).map(_ => println("done"))
-  }
 }

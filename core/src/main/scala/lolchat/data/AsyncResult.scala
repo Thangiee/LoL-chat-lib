@@ -1,7 +1,7 @@
 package lolchat.data
 
 import cats.data.{Xor, XorT}
-import cats.std.future._
+import cats.instances.future.{catsStdInstancesForFuture => futureInstance}
 
 import scala.concurrent.Future
 

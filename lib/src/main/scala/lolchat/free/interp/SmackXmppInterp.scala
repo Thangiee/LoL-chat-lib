@@ -5,9 +5,8 @@ import javax.net.ssl.SSLSocketFactory
 
 import cats.data.Xor
 import lolchat._
-import lolchat.data._
-import lolchat.free.ChatF
-import lolchat.free.ChatF._
+import lolchat.data.{AsyncResult, _}
+import lolchat.free.Chat.all._
 import lolchat.model._
 import lolchat.util.parsing._
 import org.jivesoftware.smack.ReconnectionManager.ReconnectionPolicy
@@ -25,37 +24,18 @@ import scala.collection.JavaConversions._
 import scala.concurrent.duration._
 import scala.util.Try
 
-object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
+object SmackXmppInterp extends ChatInterp[AsyncResult] {
+
   private var sessions = Map.empty[Session, (XMPPTCPConnection, Presence)]
 
   def sessionCount: Int = sessions.size
 
   def findSession(p: Session => Boolean): Option[Session] = sessions.keys.find(p)
 
-  val interpreter: Interpreter = new Interpreter {
-    def apply[A](fa: ChatF[A]): AsyncResult[A] = fa match {
-      case IsLogin(sess)                          => isLogin(sess)
-      case Login(sess)                            => login(sess)
-      case Logout(sess)                           => logout(sess)
-      case ChangeAppearance(sess, app)            => changeAppearance(sess, app)
-      case GetAppearance(sess)                    => getAppearance(sess)
-      case Friends(sess)                          => getFriends(sess)
-      case SendMsg(sess, toId, txt)               => sendMsg(sess, toId, txt)
-      case SendFriendReq(sess, id)                => sendFriendReq(sess, id)
-      case RemoveFriend(sess, id)                 => removeFriend(sess, id)
-      case GroupNames(sess)                       => groupNames(sess)
-      case CreateFriendGroup(sess, groupName)     => createFriendGroup(sess, groupName)
-      case MoveFriendToGroup(sess, friend, group) => moveFriendToGroup(sess, friend, group)
-      case GetProfile(sess)                       => getProfile(sess)
-      case UpdateProfile(sess, profile)           => updateProfile(sess, profile)
-    }
-  }
-
-  private def isLogin(sess: Session): AsyncResult[Boolean] =
+  def isLogin(sess: Session): AsyncResult[Boolean] =
     getConnection(sess)(conn => AsyncResult.right(conn.isConnected && conn.isAuthenticated))
 
-  private def login(sess: Session): AsyncResult[Unit] = {
-
+  def login(sess: Session): AsyncResult[Unit] = {
     def attemptLogin(conn: XMPPTCPConnection): AsyncResult[Unit] = { // todo: exception on blank username and filled passwd
       AsyncResult(Xor.catchNonFatal {
         if (!conn.isConnected) conn.connect()
@@ -160,7 +140,7 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
     }
   }
 
-  private def logout(sess: Session): AsyncResult[Unit] =
+  def logout(sess: Session): AsyncResult[Unit] =
     for {
       conn <- getConnection(sess)(AsyncResult.right(_))
       _    <- AsyncResult.catchNonFatal {
@@ -170,7 +150,7 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
       }
     } yield ()
 
-  private def changeAppearance(sess: Session, appearance: Appearance): AsyncResult[Unit] =
+  def changeAppearance(sess: Session, appearance: Appearance): AsyncResult[Unit] =
     modifyPresence(sess) { presence =>
       appearance match {
         case Online  => presence.setType(Presence.Type.available); presence.setMode(Presence.Mode.chat)
@@ -179,7 +159,7 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
       }
     }
 
-  private def getAppearance(sess: Session): AsyncResult[Appearance] =
+  def getAppearance(sess: Session): AsyncResult[Appearance] =
     sessions.get(sess) match {
       case Some((_, presence)) =>
         val appearance = (presence.getType, presence.getMode) match {
@@ -192,7 +172,7 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
       case None => AsyncResult.left[Appearance](Error(401, "Session not found. Try logging in first."))
     }
 
-  private def getFriends(sess: Session): AsyncResult[Vector[Friend]] = getConnection(sess) { conn =>
+  def friends(sess: Session): AsyncResult[Vector[Friend]] = getConnection(sess) { conn =>
     AsyncResult.catchNonFatal {
       val r = Roster.getInstanceFor(conn)
       for { entry <- r.getEntries.toVector } yield {
@@ -202,51 +182,52 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
     }
   }
 
-  private def sendMsg(sess: Session, toId: String, txt: String): AsyncResult[Unit] = {
+  def sendMsg(sess: Session, toId: String, txt: String): AsyncResult[Unit] = {
     val msg = new Message(s"sum$toId@pvp.net", Message.Type.chat)
     msg.setBody(txt)
     getConnection(sess)(conn => AsyncResult.catchNonFatal(conn.sendStanza(msg)))
   }
 
-  private def sendFriendReq(sess: Session, id: String): AsyncResult[Unit] =
+  def sendFriendRequest(sess: Session, id: String): AsyncResult[Unit] =
     sendPkt(sess, id, new Presence(Presence.Type.subscribe))
 
-  private def removeFriend(sess: Session, id: String): AsyncResult[Unit] =
+  def removeFriend(sess: Session, id: String): AsyncResult[Unit] =
     sendPkt(sess, id, new Presence(Presence.Type.unsubscribed))
 
-  private def groupNames(sess: Session): AsyncResult[Vector[String]] =
+  def groupNames(sess: Session): AsyncResult[Vector[String]] =
     getRoster(sess)(_.getGroups.map(_.getName).toVector)
 
-  private def createFriendGroup(sess: Session, groupName: String): AsyncResult[Unit] =
-    getRoster(sess)(_.createGroup(groupName))
+  def createGroup(sess: Session, name: String): AsyncResult[Unit] =
+    getRoster(sess)(_.createGroup(name))
 
-  private def moveFriendToGroup(sess: Session, friend: Friend, group: String): AsyncResult[Unit] =
+  def moveFriendToGroup(sess: Session, friend: Friend, group: String): AsyncResult[Unit] =
     getRoster(sess) { roster =>
       roster.getGroup(group).addEntry(roster.getEntry(s"sum${friend.id}@pvp.net")) //todo:
     }
 
-  private def getProfile(sess: Session): AsyncResult[Profile] =
+  def getProfile(sess: Session): AsyncResult[Profile] = {
     sessions.get(sess) match {
       case Some((_, presence)) => AsyncResult.right(Profile.parseXML(presence.getStatus))
       case None => AsyncResult.left[Profile](Error(401, "Session not found. Try logging in first."))
     }
+  }
 
-  private def updateProfile(sess: Session, profile: Profile): AsyncResult[Unit] = {
+  def updateProfile(sess: Session, profile: Profile): AsyncResult[Unit] = {
     modifyPresence(sess)(presence => {
       val status =
         s"""
-          |<body>
-          |<profileIcon>${profile.iconId}</profileIcon>
-          |<level>${profile.level}</level>
-          |<tier>${profile.tier}</tier>
-          |<championMasteryScore>${profile.masteryScore}</championMasteryScore>
-          |<rankedLeagueDivision>${profile.division}</rankedLeagueDivision>
-          |<rankedLeagueTier>${profile.tier}</rankedLeagueTier>
-          |<rankedLeagueQueue>RANKED_SOLO_5x5</rankedLeagueQueue>
-          |<rankedWins>${profile.wins}</rankedWins>
-          |<statusMsg>${profile.statusMsg}</statusMsg>
-          |<gameStatus>outOfGame</gameStatus>
-          |</body>
+           |<body>
+           |<profileIcon>${profile.iconId}</profileIcon>
+           |<level>${profile.level}</level>
+           |<tier>${profile.tier}</tier>
+           |<championMasteryScore>${profile.masteryScore}</championMasteryScore>
+           |<rankedLeagueDivision>${profile.division}</rankedLeagueDivision>
+           |<rankedLeagueTier>${profile.tier}</rankedLeagueTier>
+           |<rankedLeagueQueue>RANKED_SOLO_5x5</rankedLeagueQueue>
+           |<rankedWins>${profile.wins}</rankedWins>
+           |<statusMsg>${profile.statusMsg}</statusMsg>
+           |<gameStatus>outOfGame</gameStatus>
+           |</body>
         """.stripMargin
       presence.setStatus(status)
     })
@@ -255,7 +236,6 @@ object SmackXmppInterp extends ChatInterpreter[AsyncResult] {
   // ======================
   // Helper functions below
   // ======================
-
   private def mkFriend(entry: RosterEntry, presence: Presence): Friend = {
     val status = Try(presence.getStatus.replace("&apos;", "")).getOrElse("")
     val parseStatus: (String) => Option[String] = parseXml(status)(_)(identity)

@@ -1,6 +1,6 @@
 
 lazy val commonSettings = Seq(
-  version := "0.3.4",
+  version := "0.4.0",
   scalaVersion := "2.11.8",
   scalacOptions ++= Seq("-Xexperimental"),
   organization := "com.github.thangiee",
@@ -10,7 +10,7 @@ lazy val commonSettings = Seq(
   bintrayVcsUrl := Some("https://github.com/Thangiee/LoL-chat-lib"),
   bintrayReleaseOnPublish in ThisBuild := false, // 1. publish 2. bintrayRelease
   libraryDependencies ++= {
-    val catsVer = "0.6.1"
+    val catsVer = "0.7.2"
     Seq(
       "org.typelevel" %% "cats-macros" % catsVer,
       "org.typelevel" %% "cats-kernel" % catsVer,
@@ -41,9 +41,11 @@ lazy val lib = project
     },
 
     libraryDependencies ++= Seq(
+      "com.thangiee" %% "freasy-monad" % "0.1.0",
       "com.lihaoyi" %% "scalarx" % "0.3.1",
       "org.scalatest" % "scalatest_2.11" % "2.2.5" % "it,test"
-    )
+    ),
+    addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
   )
   .configs(IntegrationTest)
   .settings(Defaults.itSettings: _*)
