@@ -6,9 +6,9 @@ import lolchat.model._
 
 import scala.language.higherKinds
 
-import freasymonad._
+import freasymonad.cats.free
 
-@free sealed trait Chat {
+@free trait Chat {
   type ChatF[A] = Free[GrammarADT, A]
   sealed trait GrammarADT[A]
 

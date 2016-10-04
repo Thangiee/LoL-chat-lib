@@ -4,5 +4,5 @@ import cats.data._
 import lolchat._
 
 object ChatOp {
-  def apply[A](sess: Session => Chat[A]): ChatOp[A] = ReaderT[Chat, Session, A](sess)
+  def apply[A](sess: Session => ChatF[A]): ChatOp[A] = ReaderT[ChatF, Session, A](sess)
 }

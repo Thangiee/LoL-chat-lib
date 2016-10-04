@@ -11,8 +11,8 @@ import scala.concurrent.ExecutionContext
 import scala.language.higherKinds
 
 package object lolchat extends AnyRef with ops {
-  type Chat[A] = Chat.all.ChatF[A]
-  type ChatOp[A] = ReaderT[Chat, Session, A]
+  type ChatF[A] = Chat.ops.ChatF[A]
+  type ChatOp[A] = ReaderT[ChatF, Session, A]
   type ErrMsg = String
 
   private[lolchat] implicit val exeCtx = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8))

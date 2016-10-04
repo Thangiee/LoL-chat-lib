@@ -6,7 +6,6 @@ import javax.net.ssl.SSLSocketFactory
 import cats.data.Xor
 import lolchat._
 import lolchat.data.{AsyncResult, _}
-import lolchat.free.Chat.all._
 import lolchat.model._
 import lolchat.util.parsing._
 import org.jivesoftware.smack.ReconnectionManager.ReconnectionPolicy
@@ -24,7 +23,7 @@ import scala.collection.JavaConversions._
 import scala.concurrent.duration._
 import scala.util.Try
 
-object SmackXmppInterp extends ChatInterp[AsyncResult] {
+object SmackXmppInterp extends free.Chat.Interp[AsyncResult] {
 
   private var sessions = Map.empty[Session, (XMPPTCPConnection, Presence)]
 

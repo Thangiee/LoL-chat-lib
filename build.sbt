@@ -1,6 +1,6 @@
 
 lazy val commonSettings = Seq(
-  version := "0.4.0",
+  version := "0.4.1",
   scalaVersion := "2.11.8",
   scalacOptions ++= Seq("-Xexperimental"),
   organization := "com.github.thangiee",
@@ -41,7 +41,7 @@ lazy val lib = project
     },
 
     libraryDependencies ++= Seq(
-      "com.thangiee" %% "freasy-monad" % "0.1.0",
+      "com.thangiee" %% "freasy-monad" % "0.4.0",
       "com.lihaoyi" %% "scalarx" % "0.3.1",
       "org.scalatest" % "scalatest_2.11" % "2.2.5" % "it,test"
     ),
