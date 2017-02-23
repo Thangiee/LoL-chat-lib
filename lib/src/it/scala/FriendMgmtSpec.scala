@@ -1,9 +1,9 @@
-import cats.data.Xor
 import lolchat._
 import lolchat.data._
 import lolchat.model._
 import org.scalatest.concurrent.AsyncAssertions.{Dismissals, Waiter}
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
+import cats.syntax.all._
 
 import scala.collection.mutable
 import scala.concurrent.duration._
@@ -36,8 +36,8 @@ class FriendMgmtSpec extends BaseSpec {
     } yield names
 
     whenReady(LoLChat.run(prg(bobSess))) {
-      case Xor.Right(groupNames) => groupNames should contain(testGroup)
-      case Xor.Left(error) => fail(error.msg)
+      case Right(groupNames) => groupNames should contain(testGroup)
+      case Left(error) => fail(error.msg)
     }
   }
 
@@ -49,9 +49,9 @@ class FriendMgmtSpec extends BaseSpec {
     } yield f
 
     whenReady(LoLChat.run(prg(bobSess))) {
-      case Xor.Right(Some(f)) => f.groupName should contain(testGroup)
-      case Xor.Right(None)    => fail("fail to find alice in friend list")
-      case Xor.Left(err)      => fail(err.msg)
+      case Right(Some(f)) => f.groupName should contain(testGroup)
+      case Right(None)    => fail("fail to find alice in friend list")
+      case Left(err)      => fail(err.msg)
     }
   }
 

@@ -1,4 +1,3 @@
-import cats.data.Xor
 import lolchat._
 import lolchat.data._
 import lolchat.model.Profile
@@ -24,7 +23,7 @@ class ProfileSpec extends BaseSpec {
       p <- getProfile
     } yield p
 
-    whenReady(LoLChat.run(prg(bobSess)))(res => res should be(Xor.right(profile)))
+    whenReady(LoLChat.run(prg(bobSess)))(res => res should be(Right(profile)))
   }
 
   it should "be able to modify user profile info" in {
@@ -34,6 +33,6 @@ class ProfileSpec extends BaseSpec {
       p <- getProfile
     } yield p
 
-    whenReady(LoLChat.run(prg(bobSess)))(res => res should be(Xor.right(profile.copy(level = 30))))
+    whenReady(LoLChat.run(prg(bobSess)))(res => res should be(Right(profile.copy(level = 30))))
   }
 }

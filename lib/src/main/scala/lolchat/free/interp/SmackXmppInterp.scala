@@ -3,7 +3,6 @@ package lolchat.free.interp
 import java.util
 import javax.net.ssl.SSLSocketFactory
 
-import cats.data.Xor
 import lolchat._
 import lolchat.data.{AsyncResult, _}
 import lolchat.model._
@@ -18,6 +17,7 @@ import org.jivesoftware.smack.roster.{Roster, RosterEntry, RosterListener}
 import org.jivesoftware.smack.sasl.SASLErrorException
 import org.jivesoftware.smack.tcp.{XMPPTCPConnection, XMPPTCPConnectionConfiguration}
 import org.jivesoftware.smack.{ConnectionListener, ReconnectionManager, XMPPConnection}
+import cats.syntax.all._
 
 import scala.collection.JavaConversions._
 import scala.concurrent.duration._
@@ -36,7 +36,7 @@ object SmackXmppInterp extends free.Chat.Interp[AsyncResult] {
 
   def login(sess: Session): AsyncResult[Unit] = {
     def attemptLogin(conn: XMPPTCPConnection): AsyncResult[Unit] = { // todo: exception on blank username and filled passwd
-      AsyncResult(Xor.catchNonFatal {
+      AsyncResult(Either.catchNonFatal {
         if (!conn.isConnected) conn.connect()
         if (!conn.isAuthenticated) conn.login()
 

@@ -1,6 +1,6 @@
 
 lazy val commonSettings = Seq(
-  version := "0.4.1",
+  version := "0.4.2",
   scalaVersion := "2.11.8",
   scalacOptions ++= Seq("-Xexperimental"),
   organization := "com.github.thangiee",
@@ -10,7 +10,7 @@ lazy val commonSettings = Seq(
   bintrayVcsUrl := Some("https://github.com/Thangiee/LoL-chat-lib"),
   bintrayReleaseOnPublish in ThisBuild := false, // 1. publish 2. bintrayRelease
   libraryDependencies ++= {
-    val catsVer = "0.7.2"
+    val catsVer = "0.8.0"
     Seq(
       "org.typelevel" %% "cats-macros" % catsVer,
       "org.typelevel" %% "cats-kernel" % catsVer,
@@ -41,7 +41,7 @@ lazy val lib = project
     },
 
     libraryDependencies ++= Seq(
-      "com.thangiee" %% "freasy-monad" % "0.4.0",
+      "com.github.thangiee" %% "freasy-monad" % "0.5.0",
       "com.lihaoyi" %% "scalarx" % "0.3.1",
       "org.scalatest" % "scalatest_2.11" % "2.2.5" % "it,test"
     ),

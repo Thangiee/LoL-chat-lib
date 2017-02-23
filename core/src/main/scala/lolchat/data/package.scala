@@ -1,10 +1,10 @@
 package lolchat
 
-import cats.data.XorT
+import cats.data.EitherT
 
 import scala.concurrent.{ExecutionContext, Future}
 
 package object data {
-  type AsyncResult[A] = XorT[Future, Error, A]
+  type AsyncResult[A] = EitherT[Future, Error, A]
   type ExeCtx = ExecutionContext
 }

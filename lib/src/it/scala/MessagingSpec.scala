@@ -1,9 +1,7 @@
-import cats.data.{OptionT, Xor}
 import lolchat._
 import lolchat.data._
 import org.scalatest.concurrent.AsyncAssertions.Waiter
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
-import rx.Rx
 
 import scala.concurrent.duration._
 
@@ -41,13 +39,13 @@ class MessagingSpec extends BaseSpec {
 
   it should "be able to send a message to a friend using their in game name" in {
     whenReady(LoLChat.run(sendMsgToFriend(alice.inGameName, "testing")(bobSess))) { res =>
-      res should be(Xor.Right(None)) // i.e. no error
+      res should be(Right(None)) // i.e. no error
     }
   }
 
   "sendMsgToFriend that not on user's friend list" should "yield an err message" in {
     whenReady(LoLChat.run(sendMsgToFriend("fakeFriend", "testing")(bobSess))) { res =>
-      res should be(Xor.Right(Some("fakeFriend not in your friends list."))) // i.e. no error
+      res should be(Right(Some("fakeFriend not in your friends list."))) // i.e. no error
     }
   }
 

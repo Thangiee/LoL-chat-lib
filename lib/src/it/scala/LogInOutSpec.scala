@@ -1,4 +1,3 @@
-import cats.data.Xor
 import lolchat._
 import lolchat.data._
 import lolchat.model._
@@ -14,22 +13,22 @@ class LogInOutSpec extends BaseSpec {
     val prg = for { _ <- login; b <- isLogin; a <- getAppearance } yield (b, a)
 
     whenReady(LoLChat.run(prg(bobSess))) { res =>
-      res should matchPattern { case Xor.Right((true, Online)) => }
+      res should matchPattern { case Right((true, Online)) => }
     }
   }
 
   it should "result in a ChatError given invalid credentials" in {
     val session = Session(bob.user, "badpass", Region.NA)
     whenReady(LoLChat.run(login(session))) { res =>
-      res should matchPattern { case Xor.Left(Error(401, _, _)) => }
+      res should matchPattern { case Left(Error(401, _, _)) => }
     }
 
     whenReady(LoLChat.run(login(Session("", "abc", Region.NA)))) { res =>
-      res should matchPattern { case Xor.Left(Error(400, _, _)) => }
+      res should matchPattern { case Left(Error(400, _, _)) => }
     }
 
     whenReady(LoLChat.run(login(Session("abc", "", Region.NA)))) { res =>
-      res should matchPattern { case Xor.Left(Error(400, _, _)) => }
+      res should matchPattern { case Left(Error(400, _, _)) => }
     }
   }
 
@@ -57,7 +56,7 @@ class LogInOutSpec extends BaseSpec {
     val prg1 = for { _ <- offlineLogin; a <- getAppearance } yield a
 
     whenReady(LoLChat.run(prg1(bobSess))) { res =>
-      res should matchPattern { case Xor.Right(Offline) => }
+      res should matchPattern { case Right(Offline) => }
     }
 
     val prg2 = for { _ <- login; f <- friendByName(bob.inGameName) } yield f
@@ -70,7 +69,7 @@ class LogInOutSpec extends BaseSpec {
 
   "Running an operation before login" should "result in a ChatError" in {
     whenReady(LoLChat.run(getProfile(bobSess))) { res =>
-      res should matchPattern { case Xor.Left(Error(401, _, _)) => }
+      res should matchPattern { case Left(Error(401, _, _)) => }
     }
   }
 }
